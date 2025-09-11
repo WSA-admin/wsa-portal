@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 
 // Session configuration
 export const sessionOptions = {
-  password: process.env.SESSION_SECRET!,
+  password: process.env.SESSION_SECRET || 'build-time-placeholder-session-secret-minimum-32-chars',
   cookieName: 'wsa-portal-session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
@@ -36,33 +36,70 @@ export const defaultSession: SessionData = {
   isLoggedIn: false,
 };
 
+// Check if we have required environment variables
+const hasRequiredEnvVars = () => {
+  return process.env.AAD_CLIENT_ID && 
+         process.env.AAD_TENANT_ID && 
+         (process.env.AAD_CLIENT_SECRET || process.env.AAD_CERT_PFX_BASE64) &&
+         process.env.SESSION_SECRET;
+};
+
 // MSAL Configuration for server-side
-const msalConfig: Configuration = {
-  auth: {
-    clientId: process.env.AAD_CLIENT_ID!,
-    authority: `https://login.microsoftonline.com/${process.env.AAD_TENANT_ID}`,
-    clientSecret: process.env.AAD_CLIENT_SECRET,
-    clientCertificate: process.env.AAD_CERT_PFX_BASE64 ? {
-      thumbprint: '', // Will be extracted from certificate
-      privateKey: Buffer.from(process.env.AAD_CERT_PFX_BASE64, 'base64').toString('base64'),
-      x5c: '', // Will be extracted from certificate
-    } : undefined,
-  },
-  system: {
-    loggerOptions: {
-      loggerCallback: (level, message, containsPii) => {
-        if (process.env.NODE_ENV === 'development' && !containsPii) {
-          console.log(`[MSAL ${level}]: ${message}`);
-        }
+const createMsalConfig = (): Configuration => {
+  if (!hasRequiredEnvVars()) {
+    // Return minimal config for build time
+    return {
+      auth: {
+        clientId: 'build-time-placeholder',
+        authority: 'https://login.microsoftonline.com/common',
+        clientSecret: 'build-time-placeholder',
       },
-      piiLoggingEnabled: false,
-      logLevel: process.env.NODE_ENV === 'development' ? 3 : 1, // Info in dev, Error in prod
+      system: {
+        loggerOptions: {
+          loggerCallback: () => {},
+          piiLoggingEnabled: false,
+          logLevel: 1,
+        },
+      },
+    };
+  }
+
+  return {
+    auth: {
+      clientId: process.env.AAD_CLIENT_ID!,
+      authority: `https://login.microsoftonline.com/${process.env.AAD_TENANT_ID}`,
+      clientSecret: process.env.AAD_CLIENT_SECRET,
+      clientCertificate: process.env.AAD_CERT_PFX_BASE64 ? {
+        thumbprint: '', // Will be extracted from certificate
+        privateKey: Buffer.from(process.env.AAD_CERT_PFX_BASE64, 'base64').toString('base64'),
+        x5c: '', // Will be extracted from certificate
+      } : undefined,
     },
-  },
+    system: {
+      loggerOptions: {
+        loggerCallback: (level, message, containsPii) => {
+          if (process.env.NODE_ENV === 'development' && !containsPii) {
+            console.log(`[MSAL ${level}]: ${message}`);
+          }
+        },
+        piiLoggingEnabled: false,
+        logLevel: process.env.NODE_ENV === 'development' ? 3 : 1, // Info in dev, Error in prod
+      },
+    },
+  };
 };
 
 // Create MSAL instance
-export const msalInstance = new ConfidentialClientApplication(msalConfig);
+let msalInstance: ConfidentialClientApplication | null = null;
+
+const getMsalInstance = (): ConfidentialClientApplication => {
+  if (!msalInstance) {
+    msalInstance = new ConfidentialClientApplication(createMsalConfig());
+  }
+  return msalInstance;
+};
+
+export { getMsalInstance };
 
 // Get server-side session
 export async function getServerSession(): Promise<SessionData> {
@@ -91,6 +128,10 @@ export async function clearSession() {
 
 // Exchange authorization code for tokens
 export async function exchangeCodeForTokens(code: string, codeVerifier: string): Promise<AuthenticationResult> {
+  if (!hasRequiredEnvVars()) {
+    throw new Error('Missing required environment variables for Azure AD authentication');
+  }
+
   const tokenRequest = {
     code: code,
     scopes: [
@@ -104,11 +145,15 @@ export async function exchangeCodeForTokens(code: string, codeVerifier: string):
     codeVerifier: codeVerifier,
   };
 
-  return await msalInstance.acquireTokenByCode(tokenRequest);
+  return await getMsalInstance().acquireTokenByCode(tokenRequest);
 }
 
 // Refresh access token using refresh token
 export async function refreshAccessToken(refreshToken: string): Promise<AuthenticationResult | null> {
+  if (!hasRequiredEnvVars()) {
+    throw new Error('Missing required environment variables for Azure AD authentication');
+  }
+
   const refreshRequest = {
     refreshToken: refreshToken,
     scopes: [
@@ -120,7 +165,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<Authenti
     ],
   };
 
-  return await msalInstance.acquireTokenByRefreshToken(refreshRequest);
+  return await getMsalInstance().acquireTokenByRefreshToken(refreshRequest);
 }
 
 // Get access token for Microsoft Graph (On-Behalf-Of flow)
