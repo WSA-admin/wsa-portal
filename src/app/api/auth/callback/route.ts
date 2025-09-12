@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   if (error) {
     console.error('OAuth error:', error, errorDescription);
     return NextResponse.redirect(
-      new URL(`/auth/login?error=${encodeURIComponent(error)}`, request.url)
+      new URL(`/auth/login?error=${encodeURIComponent(error)}`, process.env.BASE_URL || request.url)
     );
   }
 
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   if (!code || !state) {
     console.error('Missing required parameters:', { code: !!code, state: !!state });
     return NextResponse.redirect(
-      new URL('/auth/login?error=invalid_request', request.url)
+      new URL('/auth/login?error=invalid_request', process.env.BASE_URL || request.url)
     );
   }
 
@@ -90,12 +90,12 @@ export async function GET(request: NextRequest) {
     await saveSession(sessionData);
 
     // Redirect to dashboard after successful authentication
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/dashboard', process.env.BASE_URL || request.url));
     
   } catch (error) {
     console.error('Token exchange error:', error);
     return NextResponse.redirect(
-      new URL('/auth/login?error=token_exchange_failed', request.url)
+      new URL('/auth/login?error=token_exchange_failed', process.env.BASE_URL || request.url)
     );
   }
 }

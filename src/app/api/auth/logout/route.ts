@@ -58,6 +58,6 @@ export async function GET(request: NextRequest) {
     
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.redirect(new URL('/auth/login?error=logout_failed', request.url));
+    return NextResponse.redirect(new URL('/auth/login?error=logout_failed', process.env.BASE_URL || request.url));
   }
 }
