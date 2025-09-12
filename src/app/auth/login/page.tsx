@@ -47,7 +47,8 @@ function LoginPageContent() {
       // Construct Microsoft login URL
       const tenantId = process.env.NEXT_PUBLIC_AAD_TENANT_ID;
       const clientId = process.env.NEXT_PUBLIC_AAD_CLIENT_ID;
-      const redirectUri = `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`;
+      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
+      const redirectUri = `${baseUrl}/api/auth/callback`;
       
       const scopes = [
         'openid',
