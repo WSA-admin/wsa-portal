@@ -10,13 +10,6 @@ function LoginPageContent() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    console.log('Login page loaded - Environment check:', {
-      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-      NEXT_PUBLIC_AAD_TENANT_ID: process.env.NEXT_PUBLIC_AAD_TENANT_ID,
-      NEXT_PUBLIC_AAD_CLIENT_ID: process.env.NEXT_PUBLIC_AAD_CLIENT_ID,
-      windowOrigin: typeof window !== 'undefined' ? window.location.origin : 'SSR'
-    });
-    
     const error = searchParams.get('error');
     const loggedOut = searchParams.get('logged_out');
     
@@ -40,7 +33,6 @@ function LoginPageContent() {
   }, [searchParams]);
 
   const handleLogin = async () => {
-    console.log('Login button clicked - starting OAuth flow');
     setIsLoading(true);
     setError(null);
 
@@ -58,12 +50,6 @@ function LoginPageContent() {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
       const redirectUri = `${baseUrl}/api/auth/callback`;
       
-      console.log('Login debug info:', {
-        NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
-        windowLocationOrigin: window.location.origin,
-        finalBaseUrl: baseUrl,
-        redirectUri: redirectUri
-      });
       
       const scopes = [
         'openid',
@@ -84,7 +70,6 @@ function LoginPageContent() {
         `code_challenge_method=S256&` +
         `prompt=select_account`;
 
-      console.log('About to redirect to Microsoft with URL:', authUrl);
       // Redirect to Microsoft login
       window.location.href = authUrl;
       
