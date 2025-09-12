@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { clearSession, getServerSession, clearTokens } from '@/lib/msalServer';
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   try {
     // Get session to retrieve sessionId before clearing
     const session = await getServerSession();

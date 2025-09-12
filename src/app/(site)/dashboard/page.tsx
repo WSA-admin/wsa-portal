@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface UserInfo {
   displayName?: string;
@@ -118,9 +119,11 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <img 
+              <Image 
                 src="/logos/WorkSource Alliance ICON-gradient.png" 
                 alt="WorkSource Alliance Icon"
+                width={32}
+                height={32}
                 className="w-8 h-8 mr-3"
                 style={{ minHeight: '35px', width: 'auto', height: '32px' }}
               />

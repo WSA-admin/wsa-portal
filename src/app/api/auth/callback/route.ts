@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { exchangeCodeForTokens, saveSession, storeTokens } from '@/lib/msalServer';
 
 export async function GET(request: NextRequest) {
@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(_request: NextRequest) {
+export async function POST() {
   // POST method not supported for this endpoint
   return NextResponse.json(
     { error: 'Method not allowed' },

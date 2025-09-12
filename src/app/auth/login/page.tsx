@@ -2,6 +2,7 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 
 function LoginPageContent() {
   const [isLoading, setIsLoading] = useState(false);
@@ -83,9 +84,11 @@ function LoginPageContent() {
         {/* WSA Logo and Branding */}
         <div className="text-center mb-8">
           <div className="mx-auto mb-4 flex items-center justify-center">
-            <img 
+            <Image 
               src="/logos/WorkSource Alliance Logo-gradient.png" 
               alt="WorkSource Alliance Logo"
+              width={200}
+              height={64}
               className="h-16 w-auto"
               style={{ minHeight: '35px' }}
             />
@@ -177,9 +180,11 @@ function LoginLoading() {
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center">
           <div className="mx-auto mb-4 flex items-center justify-center">
-            <img 
+            <Image 
               src="/logos/WorkSource Alliance Logo-gradient.png" 
               alt="WorkSource Alliance Logo"
+              width={150}
+              height={48}
               className="h-12 w-auto opacity-50"
             />
           </div>
