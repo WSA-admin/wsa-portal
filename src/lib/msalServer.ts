@@ -1,5 +1,4 @@
 import { ConfidentialClientApplication, Configuration, AuthenticationResult } from '@azure/msal-node';
-import { NextRequest, NextResponse } from 'next/server';
 import { getIronSession } from 'iron-session';
 import { cookies } from 'next/headers';
 
@@ -15,11 +14,9 @@ export const sessionOptions = {
   },
 };
 
-// Session data interface
+// Session data interface - now stores tokens directly in encrypted cookie
 export interface SessionData {
-  accessToken?: string;
-  refreshToken?: string;
-  idToken?: string;
+  sessionId?: string; // Links to server-side token storage (fallback)
   account?: {
     homeAccountId: string;
     environment: string;
@@ -28,13 +25,101 @@ export interface SessionData {
     localAccountId: string;
     name?: string;
   };
+  tokens?: TokenData; // Store tokens directly in session
   isLoggedIn: boolean;
+}
+
+// Token storage interface - stored server-side
+export interface TokenData {
+  accessToken?: string;
+  refreshToken?: string;
+  idToken?: string;
+  expiresAt?: number;
 }
 
 // Default session
 export const defaultSession: SessionData = {
   isLoggedIn: false,
 };
+
+// Persistent token storage - survives server restarts
+const tokenStore = new Map<string, TokenData>();
+
+// In-memory MSAL cache storage to persist between requests
+let msalCacheData: string | null = null;
+
+// Load tokens from persistent storage on startup (development only)
+function loadTokensFromDisk() {
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const tokenFile = path.join(process.cwd(), '.tokens.json');
+      
+      if (fs.existsSync(tokenFile)) {
+        const data = fs.readFileSync(tokenFile, 'utf8');
+        const tokens = JSON.parse(data);
+        Object.entries(tokens).forEach(([sessionId, tokenData]) => {
+          tokenStore.set(sessionId, tokenData as TokenData);
+        });
+        console.log('Loaded', tokenStore.size, 'token sessions from disk');
+      }
+    } catch (error) {
+      console.warn('Failed to load tokens from disk:', error);
+    }
+  }
+}
+
+// Save tokens to persistent storage (development only) 
+function saveTokensToDisk() {
+  if (process.env.NODE_ENV === 'development') {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const tokenFile = path.join(process.cwd(), '.tokens.json');
+      
+      const tokens = Object.fromEntries(tokenStore.entries());
+      fs.writeFileSync(tokenFile, JSON.stringify(tokens, null, 2));
+    } catch (error) {
+      console.warn('Failed to save tokens to disk:', error);
+    }
+  }
+}
+
+// Load tokens on module initialization
+loadTokensFromDisk();
+
+
+// Store tokens server-side
+export function storeTokens(sessionId: string, tokens: TokenData): void {
+  console.log('Storing tokens for sessionId:', sessionId, {
+    hasAccessToken: !!tokens.accessToken,
+    hasRefreshToken: !!tokens.refreshToken,
+    expiresAt: tokens.expiresAt ? new Date(tokens.expiresAt).toISOString() : 'N/A'
+  });
+  tokenStore.set(sessionId, tokens);
+  console.log('Token store now has', tokenStore.size, 'sessions');
+  
+  // Persist to disk in development
+  saveTokensToDisk();
+}
+
+// Retrieve tokens from server-side storage
+export function getTokens(sessionId: string): TokenData | null {
+  const tokens = tokenStore.get(sessionId) || null;
+  console.log('Retrieving tokens for sessionId:', sessionId, {
+    found: !!tokens,
+    hasAccessToken: tokens ? !!tokens.accessToken : false,
+    hasRefreshToken: tokens ? !!tokens.refreshToken : false,
+    storeSize: tokenStore.size
+  });
+  return tokens;
+}
+
+// Clear tokens from server-side storage
+export function clearTokens(sessionId: string): void {
+  tokenStore.delete(sessionId);
+}
 
 // Check if we have required environment variables
 const hasRequiredEnvVars = () => {
@@ -53,6 +138,24 @@ const createMsalConfig = (): Configuration => {
         clientId: 'build-time-placeholder',
         authority: 'https://login.microsoftonline.com/common',
         clientSecret: 'build-time-placeholder',
+      },
+      cache: {
+        cachePlugin: {
+          beforeCacheAccess: async (cacheContext) => {
+            if (msalCacheData) {
+              console.log('Loading MSAL cache data...');
+              cacheContext.tokenCache.deserialize(msalCacheData);
+            } else {
+              console.log('No MSAL cache data available');
+            }
+          },
+          afterCacheAccess: async (cacheContext) => {
+            if (cacheContext.cacheHasChanged) {
+              msalCacheData = cacheContext.tokenCache.serialize();
+              console.log('MSAL cache updated and saved');
+            }
+          },
+        },
       },
       system: {
         loggerOptions: {
@@ -74,6 +177,24 @@ const createMsalConfig = (): Configuration => {
         privateKey: Buffer.from(process.env.AAD_CERT_PFX_BASE64, 'base64').toString('base64'),
         x5c: '', // Will be extracted from certificate
       } : undefined,
+    },
+    cache: {
+      cachePlugin: {
+        beforeCacheAccess: async (cacheContext) => {
+          if (msalCacheData) {
+            console.log('Loading MSAL cache data...');
+            cacheContext.tokenCache.deserialize(msalCacheData);
+          } else {
+            console.log('No MSAL cache data available');
+          }
+        },
+        afterCacheAccess: async (cacheContext) => {
+          if (cacheContext.cacheHasChanged) {
+            msalCacheData = cacheContext.tokenCache.serialize();
+            console.log('MSAL cache updated and saved');
+          }
+        },
+      },
     },
     system: {
       loggerOptions: {
@@ -168,18 +289,69 @@ export async function refreshAccessToken(refreshToken: string): Promise<Authenti
   return await getMsalInstance().acquireTokenByRefreshToken(refreshRequest);
 }
 
-// Get access token for Microsoft Graph (On-Behalf-Of flow)
+// Get access token for Microsoft Graph
 export async function getAccessTokenForGraph(): Promise<string | null> {
   try {
     const session = await getServerSession();
     
-    if (!session.isLoggedIn || !session.accessToken) {
+    if (!session.isLoggedIn || !session.sessionId) {
+      console.log('User not logged in or missing session ID');
       return null;
     }
 
-    // For now, return the stored access token
-    // TODO: Implement token refresh logic when token is expired
-    return session.accessToken;
+    // Get tokens from persistent server-side storage
+    const tokens = getTokens(session.sessionId);
+    
+    if (!tokens) {
+      console.warn('No tokens found in server storage. User needs to re-authenticate.');
+      return null;
+    }
+
+    if (!tokens.accessToken) {
+      console.warn('Access token missing from stored tokens. User needs to re-authenticate.');
+      return null;
+    }
+
+    console.log('Found tokens:', {
+      hasAccessToken: !!tokens.accessToken,
+      hasRefreshToken: !!tokens.refreshToken,
+      isExpired: tokens.expiresAt ? tokens.expiresAt < Date.now() : 'unknown'
+    });
+
+    // Check if token is expired and refresh if needed
+    if (tokens.expiresAt && tokens.expiresAt < Date.now()) {
+      console.log('Access token expired, attempting refresh...');
+      
+      if (!tokens.refreshToken) {
+        console.warn('No refresh token available. User needs to re-authenticate.');
+        return null;
+      }
+
+      try {
+        const refreshResult = await refreshAccessToken(tokens.refreshToken);
+        if (refreshResult && refreshResult.accessToken) {
+          const newTokens = {
+            accessToken: refreshResult.accessToken,
+            refreshToken: refreshResult.refreshToken || tokens.refreshToken, // Keep old refresh token if new one not provided
+            idToken: refreshResult.idToken,
+            expiresAt: refreshResult.expiresOn ? refreshResult.expiresOn.getTime() : undefined,
+          };
+          
+          // Update server-side storage
+          storeTokens(session.sessionId, newTokens);
+          
+          console.log('Token refresh successful');
+          return refreshResult.accessToken;
+        }
+      } catch (refreshError) {
+        console.error('Token refresh failed:', refreshError);
+        // Clear invalid tokens from storage
+        clearTokens(session.sessionId);
+        return null;
+      }
+    }
+
+    return tokens.accessToken;
   } catch (error) {
     console.error('Error getting access token for Graph:', error);
     return null;
@@ -220,8 +392,6 @@ export function isTokenExpired(token: string): boolean {
 // Generate PKCE challenge
 export function generateCodeChallenge(): { codeVerifier: string; codeChallenge: string } {
   const codeVerifier = generateRandomString(128);
-  const encoder = new TextEncoder();
-  const data = encoder.encode(codeVerifier);
   
   // For Node.js environment, we'll use a simple base64url encoding
   // In production, this should use proper SHA256 hashing

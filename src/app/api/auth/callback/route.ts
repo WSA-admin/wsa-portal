@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { exchangeCodeForTokens, saveSession } from '@/lib/msalServer';
+import { exchangeCodeForTokens, saveSession, storeTokens } from '@/lib/msalServer';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   if (error) {
     console.error('OAuth error:', error, errorDescription);
     return NextResponse.redirect(
-      new URL(`/login?error=${encodeURIComponent(error)}`, request.url)
+      new URL(`/auth/login?error=${encodeURIComponent(error)}`, request.url)
     );
   }
 
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   if (!code || !state) {
     console.error('Missing required parameters:', { code: !!code, state: !!state });
     return NextResponse.redirect(
-      new URL('/login?error=invalid_request', request.url)
+      new URL('/auth/login?error=invalid_request', request.url)
     );
   }
 
@@ -37,6 +37,14 @@ export async function GET(request: NextRequest) {
     // Exchange authorization code for tokens
     const tokenResponse = await exchangeCodeForTokens(code, codeVerifier);
     
+    console.log('Token exchange result:', {
+      hasAccessToken: !!tokenResponse.accessToken,
+      hasRefreshToken: !!tokenResponse.refreshToken,
+      hasIdToken: !!tokenResponse.idToken,
+      hasAccount: !!tokenResponse.account,
+      expiresOn: tokenResponse.expiresOn?.toISOString()
+    });
+    
     if (!tokenResponse.accessToken) {
       throw new Error('No access token received');
     }
@@ -47,10 +55,23 @@ export async function GET(request: NextRequest) {
       throw new Error('No account information received');
     }
 
-    // Save session data
-    await saveSession({
+    // Generate session ID for server-side token storage
+    const sessionId = crypto.randomUUID();
+    console.log('Generated sessionId:', sessionId);
+
+    // Store tokens server-side (including refresh token for token renewal)
+    storeTokens(sessionId, {
       accessToken: tokenResponse.accessToken,
+      refreshToken: tokenResponse.refreshToken,
       idToken: tokenResponse.idToken,
+      expiresAt: tokenResponse.expiresOn ? tokenResponse.expiresOn.getTime() : undefined,
+    });
+
+    console.log('Token exchange successful. Access token and refresh token stored.');
+
+    // Save session data (tokens stored server-side due to size limits)
+    const sessionData = {
+      sessionId,
       account: {
         homeAccountId: account.homeAccountId,
         environment: account.environment,
@@ -60,7 +81,15 @@ export async function GET(request: NextRequest) {
         name: account.name,
       },
       isLoggedIn: true,
+    };
+    
+    console.log('Saving session data:', {
+      sessionId: sessionData.sessionId,
+      username: sessionData.account.username,
+      isLoggedIn: sessionData.isLoggedIn
     });
+    
+    await saveSession(sessionData);
 
     // Redirect to dashboard after successful authentication
     return NextResponse.redirect(new URL('/dashboard', request.url));
@@ -68,7 +97,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Token exchange error:', error);
     return NextResponse.redirect(
-      new URL('/login?error=token_exchange_failed', request.url)
+      new URL('/auth/login?error=token_exchange_failed', request.url)
     );
   }
 }
