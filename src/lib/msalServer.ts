@@ -318,37 +318,12 @@ export async function getAccessTokenForGraph(): Promise<string | null> {
       isExpired: tokens.expiresAt ? tokens.expiresAt < Date.now() : 'unknown'
     });
 
-    // Check if token is expired and refresh if needed
+    // Check if token is expired
     if (tokens.expiresAt && tokens.expiresAt < Date.now()) {
-      console.log('Access token expired, attempting refresh...');
-      
-      if (!tokens.refreshToken) {
-        console.warn('No refresh token available. User needs to re-authenticate.');
-        return null;
-      }
-
-      try {
-        const refreshResult = await refreshAccessToken(tokens.refreshToken);
-        if (refreshResult && refreshResult.accessToken) {
-          const newTokens = {
-            accessToken: refreshResult.accessToken,
-            refreshToken: refreshResult.refreshToken || tokens.refreshToken, // Keep old refresh token if new one not provided
-            idToken: refreshResult.idToken,
-            expiresAt: refreshResult.expiresOn ? refreshResult.expiresOn.getTime() : undefined,
-          };
-          
-          // Update server-side storage
-          storeTokens(session.sessionId, newTokens);
-          
-          console.log('Token refresh successful');
-          return refreshResult.accessToken;
-        }
-      } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
-        // Clear invalid tokens from storage
-        clearTokens(session.sessionId);
-        return null;
-      }
+      console.log('Access token expired. User needs to re-authenticate.');
+      // Clear expired tokens
+      clearTokens(session.sessionId);
+      return null;
     }
 
     return tokens.accessToken;

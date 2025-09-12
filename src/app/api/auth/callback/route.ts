@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
     
     console.log('Token exchange result:', {
       hasAccessToken: !!tokenResponse.accessToken,
-      hasRefreshToken: !!tokenResponse.refreshToken,
       hasIdToken: !!tokenResponse.idToken,
       hasAccount: !!tokenResponse.account,
       expiresOn: tokenResponse.expiresOn?.toISOString()
@@ -59,15 +58,14 @@ export async function GET(request: NextRequest) {
     const sessionId = crypto.randomUUID();
     console.log('Generated sessionId:', sessionId);
 
-    // Store tokens server-side (including refresh token for token renewal)
+    // Store tokens server-side
     storeTokens(sessionId, {
       accessToken: tokenResponse.accessToken,
-      refreshToken: tokenResponse.refreshToken,
       idToken: tokenResponse.idToken,
       expiresAt: tokenResponse.expiresOn ? tokenResponse.expiresOn.getTime() : undefined,
     });
 
-    console.log('Token exchange successful. Access token and refresh token stored.');
+    console.log('Token exchange successful. Access token stored.');
 
     // Save session data (tokens stored server-side due to size limits)
     const sessionData = {
