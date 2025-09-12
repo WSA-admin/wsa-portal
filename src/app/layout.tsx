@@ -1,41 +1,32 @@
-import type { Metadata } from "next";
-import { Lexend } from "next/font/google";
+import { Layout, Header, Body } from "@/app/components/layout";
+import { Logo, Nav, NavLink, Button } from "@/app/components/ui";
+import { siteMetadata, siteViewport } from "@/lib/metadata";
+import { getServerSession } from "@/lib/msalServer";
 import "./globals.css";
 
-const lexend = Lexend({
-  variable: "--font-lexend",
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
+export const metadata = siteMetadata;
+export const viewport = siteViewport;
 
-export const metadata: Metadata = {
-  title: "WorkSource Alliance Portal",
-  description: "Connecting international students to Atlantic Canada's opportunities",
-  icons: {
-    icon: [
-      {
-        url: "/logos/WorkSource Alliance ICON-gradient.png",
-        sizes: "any",
-        type: "image/png",
-      },
-    ],
-    shortcut: "/logos/WorkSource Alliance ICON-gradient.png",
-    apple: "/logos/WorkSource Alliance ICON-gradient.png",
-  },
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getServerSession();
+  const isAuthenticated = session.isLoggedIn;
+
   return (
-    <html lang="en">
-      <body
-        className={`${lexend.variable} font-lexend antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <Layout>
+      {isAuthenticated && (
+        <Header>
+          <Logo />
+          <Nav>
+            <NavLink>Documentation</NavLink>
+          </Nav>
+          <Button>Logout</Button>
+        </Header>
+      )}
+      <Body>{children}</Body>
+    </Layout>
   );
 }

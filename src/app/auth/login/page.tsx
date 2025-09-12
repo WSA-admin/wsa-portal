@@ -1,13 +1,15 @@
 'use client';
 
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 
 function LoginPageContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
     const error = searchParams.get('error');
@@ -31,6 +33,27 @@ function LoginPageContent() {
       setError(null);
     }
   }, [searchParams]);
+
+  // Check if user is already authenticated
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await fetch('/api/graph/me');
+        if (response.ok) {
+          // User is already authenticated, redirect to dashboard
+          router.push('/dashboard');
+          return;
+        }
+      } catch (err) {
+        // User is not authenticated, continue with login page
+        console.log('User not authenticated, showing login page');
+      } finally {
+        setCheckingAuth(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, [router]);
 
   const handleLogin = async () => {
     setIsLoading(true);
@@ -79,6 +102,30 @@ function LoginPageContent() {
       setIsLoading(false);
     }
   };
+
+  // Show loading while checking authentication
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4" style={{background: 'linear-gradient(135deg, #e6f3fc 0%, #f0e6f7 100%)'}}>
+        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
+          <div className="text-center">
+            <div className="mx-auto mb-4 flex items-center justify-center">
+              <Image 
+                src="/logos/WorkSource Alliance Logo-gradient.png" 
+                alt="WorkSource Alliance Logo"
+                width={200}
+                height={64}
+                className="h-16 w-auto opacity-75"
+                style={{ minHeight: '35px' }}
+              />
+            </div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto mb-4" style={{borderBottomColor: '#2592D0'}}></div>
+            <p className="text-gray-600">Checking authentication status...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4" style={{background: 'linear-gradient(135deg, #e6f3fc 0%, #f0e6f7 100%)'}}>
