@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { exchangeCodeForTokens, saveSession, storeTokens } from '@/lib/msalServer';
 
 export async function GET(request: NextRequest) {
