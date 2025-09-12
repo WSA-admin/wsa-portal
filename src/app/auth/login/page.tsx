@@ -50,6 +50,13 @@ function LoginPageContent() {
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || window.location.origin;
       const redirectUri = `${baseUrl}/api/auth/callback`;
       
+      console.log('Login debug info:', {
+        NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+        windowLocationOrigin: window.location.origin,
+        finalBaseUrl: baseUrl,
+        redirectUri: redirectUri
+      });
+      
       const scopes = [
         'openid',
         'offline_access', 
