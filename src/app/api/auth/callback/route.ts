@@ -100,7 +100,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   // POST method not supported for this endpoint
   return NextResponse.json(
     { error: 'Method not allowed' },

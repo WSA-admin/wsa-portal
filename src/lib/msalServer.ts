@@ -48,12 +48,12 @@ const tokenStore = new Map<string, TokenData>();
 // In-memory MSAL cache storage to persist between requests
 let msalCacheData: string | null = null;
 
-// Load tokens from persistent storage on startup (development only)
+// Load tokens from persistent storage on startup (development only)  
 function loadTokensFromDisk() {
   if (process.env.NODE_ENV === 'development') {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-require-imports
+      const path = require('path'); // eslint-disable-line @typescript-eslint/no-require-imports
       const tokenFile = path.join(process.cwd(), '.tokens.json');
       
       if (fs.existsSync(tokenFile)) {
@@ -74,8 +74,8 @@ function loadTokensFromDisk() {
 function saveTokensToDisk() {
   if (process.env.NODE_ENV === 'development') {
     try {
-      const fs = require('fs');
-      const path = require('path');
+      const fs = require('fs'); // eslint-disable-line @typescript-eslint/no-require-imports
+      const path = require('path'); // eslint-disable-line @typescript-eslint/no-require-imports
       const tokenFile = path.join(process.cwd(), '.tokens.json');
       
       const tokens = Object.fromEntries(tokenStore.entries());
@@ -334,7 +334,7 @@ export async function getAccessTokenForGraph(): Promise<string | null> {
 }
 
 // Validate and decode JWT token (basic validation)
-export function decodeJwt(token: string): any {
+export function decodeJwt(token: string): Record<string, unknown> | null {
   try {
     const parts = token.split('.');
     if (parts.length !== 3) {
@@ -353,7 +353,7 @@ export function decodeJwt(token: string): any {
 export function isTokenExpired(token: string): boolean {
   try {
     const decoded = decodeJwt(token);
-    if (!decoded || !decoded.exp) {
+    if (!decoded || !decoded.exp || typeof decoded.exp !== 'number') {
       return true;
     }
     

@@ -27,7 +27,7 @@ export interface ListItem {
   id: string;
   fields: {
     Title: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   createdDateTime: string;
   lastModifiedDateTime: string;
@@ -138,7 +138,7 @@ export class SharePointService {
   }
 
   // Create new list item
-  async createListItem(siteId: string, listId: string, fields: Record<string, any>): Promise<ListItem> {
+  async createListItem(siteId: string, listId: string, fields: Record<string, unknown>): Promise<ListItem> {
     try {
       const response = await this.graphClient
         .api(`/sites/${siteId}/lists/${listId}/items`)
@@ -153,7 +153,7 @@ export class SharePointService {
   }
 
   // Update list item
-  async updateListItem(siteId: string, listId: string, itemId: string, fields: Record<string, any>): Promise<ListItem> {
+  async updateListItem(siteId: string, listId: string, itemId: string, fields: Record<string, unknown>): Promise<ListItem> {
     try {
       const response = await this.graphClient
         .api(`/sites/${siteId}/lists/${listId}/items/${itemId}`)
@@ -276,7 +276,7 @@ export class SharePointService {
   }
 
   // Search for items in SharePoint
-  async searchItems(siteId: string, query: string): Promise<any[]> {
+  async searchItems(siteId: string, query: string): Promise<unknown[]> {
     try {
       const response = await this.graphClient
         .api(`/sites/${siteId}/drive/root/search(q='${encodeURIComponent(query)}')`)
@@ -304,7 +304,7 @@ export class SharePointService {
   }
 
   // Check user permissions on a site
-  async getUserPermissions(siteId: string): Promise<any> {
+  async getUserPermissions(siteId: string): Promise<unknown> {
     try {
       const permissions = await this.graphClient
         .api(`/sites/${siteId}/permissions`)

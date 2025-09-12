@@ -25,28 +25,28 @@ export interface EventItem {
 }
 
 // Convert raw SharePoint list item to typed NewsItem
-export function mapToNewsItem(item: any): NewsItem {
+export function mapToNewsItem(item: { id: string; fields: Record<string, unknown>; createdDateTime: string; lastModifiedDateTime: string }): NewsItem {
   return {
     id: item.id,
-    title: item.fields.Title || '',
-    summary: item.fields.Summary || '',
-    body: item.fields.Body || '',
-    published: item.fields.Published || item.createdDateTime,
-    imageUrl: item.fields.ImageUrl || undefined,
+    title: typeof item.fields.Title === 'string' ? item.fields.Title : '',
+    summary: typeof item.fields.Summary === 'string' ? item.fields.Summary : '',
+    body: typeof item.fields.Body === 'string' ? item.fields.Body : '',
+    published: typeof item.fields.Published === 'string' ? item.fields.Published : item.createdDateTime,
+    imageUrl: typeof item.fields.ImageUrl === 'string' ? item.fields.ImageUrl : undefined,
     createdDateTime: item.createdDateTime,
     lastModifiedDateTime: item.lastModifiedDateTime,
   };
 }
 
 // Convert raw SharePoint list item to typed EventItem
-export function mapToEventItem(item: any): EventItem {
+export function mapToEventItem(item: { id: string; fields: Record<string, unknown>; createdDateTime: string; lastModifiedDateTime: string }): EventItem {
   return {
     id: item.id,
-    title: item.fields.Title || '',
-    start: item.fields.Start || '',
-    end: item.fields.End || '',
-    location: item.fields.Location || '',
-    description: item.fields.Description || '',
+    title: typeof item.fields.Title === 'string' ? item.fields.Title : '',
+    start: typeof item.fields.Start === 'string' ? item.fields.Start : '',
+    end: typeof item.fields.End === 'string' ? item.fields.End : '',
+    location: typeof item.fields.Location === 'string' ? item.fields.Location : '',
+    description: typeof item.fields.Description === 'string' ? item.fields.Description : '',
     createdDateTime: item.createdDateTime,
     lastModifiedDateTime: item.lastModifiedDateTime,
   };
@@ -102,7 +102,7 @@ export class NewsService {
   }
 
   async updateNews(id: string, news: Partial<Omit<NewsItem, 'id' | 'createdDateTime' | 'lastModifiedDateTime'>>): Promise<NewsItem> {
-    const fields: Record<string, any> = {};
+    const fields: Record<string, unknown> = {};
     
     if (news.title !== undefined) fields.Title = news.title;
     if (news.summary !== undefined) fields.Summary = news.summary;
@@ -169,7 +169,7 @@ export class EventsService {
   }
 
   async updateEvent(id: string, event: Partial<Omit<EventItem, 'id' | 'createdDateTime' | 'lastModifiedDateTime'>>): Promise<EventItem> {
-    const fields: Record<string, any> = {};
+    const fields: Record<string, unknown> = {};
     
     if (event.title !== undefined) fields.Title = event.title;
     if (event.start !== undefined) fields.Start = event.start;
@@ -231,8 +231,6 @@ export class FilesService {
     const chunkSize = 320 * 1024; // 320KB chunks
     const totalChunks = Math.ceil(fileSize / chunkSize);
     
-    let uploadedBytes = 0;
-    
     for (let i = 0; i < totalChunks; i++) {
       const start = i * chunkSize;
       const end = Math.min(start + chunkSize, fileSize);
@@ -245,8 +243,6 @@ export class FilesService {
         end,
         fileSize
       );
-      
-      uploadedBytes = end;
       
       // If upload is complete, return the result
       if (result.id) {
