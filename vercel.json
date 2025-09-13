@@ -51,18 +51,6 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/auth/login",
-      "permanent": false
-    },
-    {
-      "source": "/login",
-      "destination": "/auth/login",
-      "permanent": false
-    }
-  ],
   "env": {
     "NODE_ENV": "production"
   }
