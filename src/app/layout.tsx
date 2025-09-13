@@ -1,5 +1,3 @@
-import { Layout, Header, Body } from "@/app/components/layout";
-import { Logo, Nav, NavLink, LogoutButton } from "@/app/components/ui";
 import { siteMetadata, siteViewport } from "@/lib/metadata";
 import "./globals.css";
 
@@ -14,16 +12,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Minimal root layout - no navigation, just HTML structure
   return (
-    <Layout>
-      <Header>
-        <Logo />
-        <Nav>
-          <NavLink href="/documentation">Documentation</NavLink>
-        </Nav>
-        <LogoutButton />
-      </Header>
-      <Body>{children}</Body>
-    </Layout>
+    <html lang="en">
+      <body className="antialiased">
+        {children}
+      </body>
+    </html>
   );
 }

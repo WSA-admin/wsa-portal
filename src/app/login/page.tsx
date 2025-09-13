@@ -248,17 +248,8 @@ function LoginLoading() {
 // Main export with Suspense wrapper
 export default function LoginPage() {
   return (
-    <html lang="en">
-      <head>
-        <title>Login - WorkSource Alliance Portal</title>
-        <meta name="description" content="Login to WorkSource Alliance Portal" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
-      <body>
-        <Suspense fallback={<LoginLoading />}>
-          <LoginPageContent />
-        </Suspense>
-      </body>
-    </html>
+    <Suspense fallback={<LoginLoading />}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
