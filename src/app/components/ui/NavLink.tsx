@@ -7,9 +7,10 @@ interface NavLinkProps {
   href?: string;
   active?: boolean;
   onClick?: () => void;
+  mobile?: boolean;
 }
 
-export default function NavLink({ children, href = "#", active = false, onClick }: NavLinkProps) {
+export default function NavLink({ children, href = "#", active = false, onClick, mobile = false }: NavLinkProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (onClick) {
       e.preventDefault();
@@ -25,16 +26,20 @@ export default function NavLink({ children, href = "#", active = false, onClick 
     e.currentTarget.style.opacity = "1";
   };
 
+  const baseClasses = "text-sm font-medium transition-all duration-200 hover:opacity-80";
+  const desktopClasses = active ? 'border-b-2' : '';
+  const mobileClasses = mobile ? 'block px-3 py-2 text-base font-medium rounded-md hover:bg-gray-100' : '';
+  
   return (
     <a
       href={href}
       onClick={handleClick}
-      className={`text-sm font-medium transition-all duration-200 hover:opacity-80 ${active ? 'border-b-2' : ''}`}
+      className={`${baseClasses} ${mobile ? mobileClasses : desktopClasses}`}
       style={{ 
         color: active ? brandColors.blue : brandColors.navy,
         fontFamily: typography.fontFamily.primary,
         fontWeight: typography.fontWeight.medium,
-        borderBottomColor: active ? brandColors.blue : 'transparent',
+        borderBottomColor: active && !mobile ? brandColors.blue : 'transparent',
         textDecoration: 'none'
       }}
       onMouseEnter={handleMouseEnter}
