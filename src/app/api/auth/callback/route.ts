@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   if (error) {
     console.error('OAuth error:', error, errorDescription);
     return NextResponse.redirect(
-      new URL(`/auth/login?error=${encodeURIComponent(error)}`, process.env.BASE_URL || request.url)
+      new URL(`/login?error=${encodeURIComponent(error)}`, process.env.BASE_URL || request.url)
     );
   }
 
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   if (!code || !state) {
     console.error('Missing required parameters:', { code: !!code, state: !!state });
     return NextResponse.redirect(
-      new URL('/auth/login?error=invalid_request', process.env.BASE_URL || request.url)
+      new URL('/login?error=invalid_request', process.env.BASE_URL || request.url)
     );
   }
 
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Token exchange error:', error);
     return NextResponse.redirect(
-      new URL('/auth/login?error=token_exchange_failed', process.env.BASE_URL || request.url)
+      new URL('/login?error=token_exchange_failed', process.env.BASE_URL || request.url)
     );
   }
 }

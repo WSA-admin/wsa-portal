@@ -24,17 +24,17 @@ export default function LogoutButton() {
           window.location.href = data.logoutUrl;
         } else {
           // Fallback: redirect directly to login page
-          window.location.href = '/auth/login?logged_out=true';
+          window.location.href = '/login?logged_out=true';
         }
       } else {
         console.error('Logout failed');
         // Still redirect to login page even if logout API fails
-        window.location.href = '/auth/login?error=logout_failed';
+        window.location.href = '/login?error=logout_failed';
       }
     } catch (error) {
       console.error('Error during logout:', error);
       // Fallback: redirect to login page
-      window.location.href = '/auth/login?error=logout_failed';
+      window.location.href = '/login?error=logout_failed';
     }
     
     // Note: setIsLoggingOut(false) is not needed since we redirect away

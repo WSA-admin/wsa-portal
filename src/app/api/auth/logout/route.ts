@@ -15,7 +15,7 @@ export async function POST() {
     // Construct Microsoft logout URL to clear Azure AD session
     const tenantId = process.env.AAD_TENANT_ID;
     const clientId = process.env.AAD_CLIENT_ID;
-    const postLogoutRedirectUri = `${process.env.BASE_URL}/auth/login?logged_out=true`;
+    const postLogoutRedirectUri = `${process.env.BASE_URL}/login?logged_out=true`;
     
     const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/logout?` +
       `client_id=${clientId}&` +
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     
     const tenantId = process.env.AAD_TENANT_ID;
     const clientId = process.env.AAD_CLIENT_ID;
-    const postLogoutRedirectUri = `${process.env.BASE_URL}/auth/login?logged_out=true`;
+    const postLogoutRedirectUri = `${process.env.BASE_URL}/login?logged_out=true`;
     
     const logoutUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/logout?` +
       `client_id=${clientId}&` +
@@ -58,6 +58,6 @@ export async function GET(request: NextRequest) {
     
   } catch (error) {
     console.error('Logout error:', error);
-    return NextResponse.redirect(new URL('/auth/login?error=logout_failed', process.env.BASE_URL || request.url));
+    return NextResponse.redirect(new URL('/login?error=logout_failed', process.env.BASE_URL || request.url));
   }
 }

@@ -175,7 +175,7 @@ export default function WSAPortalPage() {
               <pre>{`wsa-portal/
 ├── 📱 src/app/
 │   ├── (site)/                    # Main site group
-│   │   ├── auth/login/           # Authentication pages
+│   │   ├── login/               # Login page (standalone)
 │   │   ├── dashboard/            # Protected dashboard
 │   │   ├── documentation/        # Documentation hub
 │   │   │   ├── developer/        # Developer manual

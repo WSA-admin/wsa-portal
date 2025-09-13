@@ -17,7 +17,7 @@ export default function ErrorState({ error }: ErrorStateProps) {
           <h2 className="text-xl font-bold text-gray-900 mb-2">Authentication Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => router.push('/auth/login')}
+            onClick={() => router.push('/login')}
             className="text-white px-4 py-2 rounded-lg transition-colors duration-200"
             style={{backgroundColor: '#2592D0'}}
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1a7bb8')}

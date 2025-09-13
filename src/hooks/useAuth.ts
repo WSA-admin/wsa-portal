@@ -16,7 +16,7 @@ export function useAuth() {
           window.location.href = data.logoutUrl;
         } else {
           // Fallback - redirect to login page
-          router.push('/auth/login?logged_out=true');
+          router.push('/login?logged_out=true');
         }
       } else {
         throw new Error('Logout failed');
@@ -24,13 +24,13 @@ export function useAuth() {
     } catch (err) {
       console.error('Logout error:', err);
       // Fallback - redirect to login page
-      router.push('/auth/login?error=logout_failed');
+      router.push('/login?error=logout_failed');
     }
   };
 
   const redirectToLogin = (error?: string) => {
     const params = error ? `?error=${encodeURIComponent(error)}` : '';
-    router.push(`/auth/login${params}`);
+    router.push(`/login${params}`);
   };
 
   return {
