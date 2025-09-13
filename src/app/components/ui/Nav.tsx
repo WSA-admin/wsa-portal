@@ -66,7 +66,10 @@ export default function Nav({ children, className = "" }: NavProps) {
           <div className="px-2 pt-2 pb-3 space-y-1">
             {React.Children.map(children, (child) => {
               if (React.isValidElement(child)) {
-                return React.cloneElement(child, { mobile: true });
+                return React.cloneElement(
+                  child as React.ReactElement<{ mobile?: boolean }>, 
+                  { mobile: true }
+                );
               }
               return child;
             })}
