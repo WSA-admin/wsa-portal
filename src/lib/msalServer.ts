@@ -226,9 +226,20 @@ export { getMsalInstance };
 export async function getServerSession(): Promise<SessionData> {
   const cookieStore = await cookies();
   const session = await getIronSession<SessionData>(cookieStore, sessionOptions);
+  
   if (!session.isLoggedIn) {
     return defaultSession;
   }
+  
+  // Check if tokens are expired
+  if (session.sessionId) {
+    const tokens = getTokens(session.sessionId);
+    if (!tokens || !tokens.accessToken || (tokens.expiresAt && tokens.expiresAt < Date.now())) {
+      // Tokens are expired or missing, treat as unauthenticated
+      return defaultSession;
+    }
+  }
+  
   return session;
 }
 

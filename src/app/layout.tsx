@@ -21,7 +21,7 @@ export default async function RootLayout({
         <Header>
           <Logo />
           <Nav>
-            <NavLink>Documentation</NavLink>
+            <NavLink href="/documentation">Documentation</NavLink>
           </Nav>
           <Button>Logout</Button>
         </Header>
