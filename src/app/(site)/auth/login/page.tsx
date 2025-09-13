@@ -44,7 +44,7 @@ function LoginPageContent() {
           router.push('/dashboard');
           return;
         }
-      } catch (err) {
+      } catch {
         // User is not authenticated, continue with login page
         console.log('User not authenticated, showing login page');
       } finally {

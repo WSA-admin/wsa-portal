@@ -25,7 +25,7 @@ export default function DeveloperManualPage() {
           <Section orientation="vertical" positioning="start" spacing="sm">
             <p className="text-gray-700">
               WorkSource Alliance operates a comprehensive digital ecosystem consisting of 4 main projects, each serving 
-              specific purposes in connecting international students and graduates with Atlantic Canada's opportunities.
+              specific purposes in connecting international students and graduates with Atlantic Canada&apos;s opportunities.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="bg-white p-4 rounded-lg">
