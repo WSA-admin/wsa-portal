@@ -4,6 +4,9 @@ import { siteMetadata, siteViewport } from "@/lib/metadata";
 import { getServerSession } from "@/lib/msalServer";
 import "./globals.css";
 
+// Force dynamic rendering for all pages due to authentication
+export const dynamic = 'force-dynamic';
+
 export const metadata = siteMetadata;
 export const viewport = siteViewport;
 
