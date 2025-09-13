@@ -1,4 +1,4 @@
-import { Section, Heading, SubHeading, Card } from "@/app/components/ui";
+import { Section, Heading, SubHeading, Card, CodeBlock } from "@/app/components/ui";
 import Link from "next/link";
 
 export default function WSAHubPage() {
@@ -199,8 +199,10 @@ export default function WSAHubPage() {
         <Card variant="gray">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Next.js Application Structure</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`wsa-hub/
+            <CodeBlock 
+              title="Next.js Application Structure"
+              language="structure"
+            >{`wsa-hub/
 ├── 📱 app/
 │   ├── page.tsx                  # Main hub landing page
 │   ├── layout.tsx                # Application layout
@@ -218,8 +220,7 @@ export default function WSAHubPage() {
 │   ├── package.json              # Project dependencies
 │   └── package-lock.json         # Dependency lock file
 └── 📋 Documentation
-    └── README.md                 # Project documentation`}</pre>
-            </div>
+    └── README.md                 # Project documentation`}</CodeBlock>
           </Section>
         </Card>
       </Section>
@@ -262,8 +263,10 @@ export default function WSAHubPage() {
         <Card variant="gray">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Standard Next.js Development</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`# Development server
+            <CodeBlock 
+              title="Standard Next.js Development"
+              language="bash"
+            >{`# Development server
 npm run dev
 # or
 yarn dev
@@ -280,8 +283,7 @@ npm run build
 npm run start
 
 # Deployment
-# Automatic deployment via Vercel platform`}</pre>
-            </div>
+# Automatic deployment via Vercel platform`}</CodeBlock>
           </Section>
         </Card>
       </Section>

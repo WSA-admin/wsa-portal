@@ -27,18 +27,18 @@ export default function DeveloperManualPage() {
               WorkSource Alliance operates a comprehensive digital ecosystem consisting of 4 main projects, each serving 
               specific purposes in connecting international students and graduates with Atlantic Canada&apos;s opportunities.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div className="bg-white p-4 rounded-lg">
-                <h4 className="font-semibold text-[#2592D0] mb-2">Frontend Platforms</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div className="bg-white p-4 rounded-lg border-l-4 border-[#2592D0]">
+                <h4 className="font-semibold text-[#2592D0] mb-3 text-base">Frontend Platforms</h4>
+                <ul className="text-sm text-gray-600 space-y-2">
                   <li>• Main Platform (Next.js/Supabase)</li>
                   <li>• Internal Portal (Next.js/Azure AD)</li>
                   <li>• Executive Hub (Next.js)</li>
                 </ul>
               </div>
-              <div className="bg-white p-4 rounded-lg">
-                <h4 className="font-semibold text-[#702083] mb-2">Backend Systems</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
+              <div className="bg-white p-4 rounded-lg border-l-4 border-[#702083]">
+                <h4 className="font-semibold text-[#702083] mb-3 text-base">Backend Systems</h4>
+                <ul className="text-sm text-gray-600 space-y-2">
                   <li>• Central API (FastAPI/PostgreSQL)</li>
                   <li>• Resume Processing System</li>
                   <li>• Job Matching Algorithm</li>

@@ -1,4 +1,4 @@
-import { Section, Heading, SubHeading, Card } from "@/app/components/ui";
+import { Section, Heading, SubHeading, Card, CodeBlock } from "@/app/components/ui";
 import Link from "next/link";
 
 export default function WorkSourceAlliancePage() {
@@ -96,8 +96,9 @@ export default function WorkSourceAlliancePage() {
         <Card variant="white">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Turborepo Monorepo Structure</h4>
-            <div className="bg-gray-50 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`worksourcealliance/
+            <CodeBlock 
+              language="structure"
+            >{`worksourcealliance/
 ├── 📱 apps/
 │   ├── web/                    # Main Next.js application
 │   │   ├── app/               # App Router pages and layouts
@@ -115,8 +116,7 @@ export default function WorkSourceAlliancePage() {
 │   ├── email-templates/      # Transactional email templates
 │   └── shared/               # Common utilities and types
 ├── 📚 documentation/          # Project documentation
-└── 🔧 tooling/               # Build tools and configurations`}</pre>
-            </div>
+└── 🔧 tooling/               # Build tools and configurations`}</CodeBlock>
           </Section>
         </Card>
       </Section>
@@ -163,14 +163,14 @@ export default function WorkSourceAlliancePage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Public Routes</h4>
               <div className="space-y-1 text-sm text-gray-600">
-                <p>• <code>/</code> - Homepage with platform overview</p>
-                <p>• <code>/about</code> - Organization mission and team</p>
-                <p>• <code>/events</code> - Community events and workshops</p>
-                <p>• <code>/skills-for-hire</code> - Talent showcase platform</p>
-                <p>• <code>/job-listing-page</code> - Job opportunities browser</p>
-                <p>• <code>/podcast</code> - Audio content and interviews</p>
-                <p>• <code>/blog</code> - Industry insights and news</p>
-                <p>• <code>/contact</code> - Contact information</p>
+                <p>• <CodeBlock variant="inline">/</CodeBlock> - Homepage with platform overview</p>
+                <p>• <CodeBlock variant="inline">/about</CodeBlock> - Organization mission and team</p>
+                <p>• <CodeBlock variant="inline">/events</CodeBlock> - Community events and workshops</p>
+                <p>• <CodeBlock variant="inline">/skills-for-hire</CodeBlock> - Talent showcase platform</p>
+                <p>• <CodeBlock variant="inline">/job-listing-page</CodeBlock> - Job opportunities browser</p>
+                <p>• <CodeBlock variant="inline">/podcast</CodeBlock> - Audio content and interviews</p>
+                <p>• <CodeBlock variant="inline">/blog</CodeBlock> - Industry insights and news</p>
+                <p>• <CodeBlock variant="inline">/contact</CodeBlock> - Contact information</p>
               </div>
             </Section>
           </Card>
@@ -179,11 +179,11 @@ export default function WorkSourceAlliancePage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Legal & Documentation</h4>
               <div className="space-y-1 text-sm text-gray-600">
-                <p>• <code>/terms-of-service</code> - Platform terms</p>
-                <p>• <code>/privacy-policy</code> - Data privacy policy</p>
-                <p>• <code>/cookie-policy</code> - Cookie usage policy</p>
-                <p>• <code>/faq</code> - Frequently asked questions</p>
-                <p>• <code>/press</code> - Media resources and news</p>
+                <p>• <CodeBlock variant="inline">/terms-of-service</CodeBlock> - Platform terms</p>
+                <p>• <CodeBlock variant="inline">/privacy-policy</CodeBlock> - Data privacy policy</p>
+                <p>• <CodeBlock variant="inline">/cookie-policy</CodeBlock> - Cookie usage policy</p>
+                <p>• <CodeBlock variant="inline">/faq</CodeBlock> - Frequently asked questions</p>
+                <p>• <CodeBlock variant="inline">/press</CodeBlock> - Media resources and news</p>
               </div>
             </Section>
           </Card>
@@ -240,8 +240,9 @@ export default function WorkSourceAlliancePage() {
         <Card variant="gray">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Development Setup</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`# Prerequisites: Node.js 18.18.0+, pnpm 8.0.0+
+            <CodeBlock 
+              language="bash"
+            >{`# Prerequisites: Node.js 18.18.0+, pnpm 8.0.0+
 
 # Clone repository
 git clone https://github.com/worksourcealliance/worksourcealliance.git
@@ -256,8 +257,7 @@ cp apps/web/.env.example apps/web/.env.local
 # Start development server
 pnpm dev
 
-# Open browser: http://localhost:3000`}</pre>
-            </div>
+# Open browser: http://localhost:3000`}</CodeBlock>
           </Section>
         </Card>
       </Section>

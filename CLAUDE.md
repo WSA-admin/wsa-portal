@@ -66,6 +66,8 @@ The application uses a hybrid authentication approach:
 
 When working with authentication flows, note that the codebase handles both development and production scenarios with appropriate placeholder values during build time.
 
+**Important:** The developer always runs their own development server. Do not start `npm run dev` automatically - the user manages their own server instance.
+
 ## WorkSource Alliance Brand Guidelines
 
 ### Brand Colors

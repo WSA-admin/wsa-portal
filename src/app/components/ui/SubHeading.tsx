@@ -13,7 +13,7 @@ export default function SubHeading({
 }: SubHeadingProps) {
   return (
     <h3 
-      className={`text-lg font-medium ${className}`}
+      className={`text-base sm:text-lg lg:text-xl font-medium ${className}`}
       style={{
         color: color,
         fontFamily: typography.fontFamily.primary,

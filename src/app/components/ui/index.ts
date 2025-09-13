@@ -9,3 +9,5 @@ export { default as SubHeading } from "./SubHeading";
 export { default as Label } from "./Label";
 export { default as Text } from "./Text";
 export { default as Card } from "./Card";
+export { default as ResponsiveGrid } from "./ResponsiveGrid";
+export { default as CodeBlock } from "./CodeBlock";

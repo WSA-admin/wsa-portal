@@ -12,9 +12,13 @@ interface NavLinkProps {
 
 export default function NavLink({ children, href = "#", active = false, onClick, mobile = false }: NavLinkProps) {
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (onClick) {
+    // Only prevent default if we don't have a valid href for navigation
+    if (onClick && (!href || href === "#")) {
       e.preventDefault();
       onClick();
+    } else if (onClick && href && href !== "#") {
+      // Allow navigation to proceed, then call onClick (for mobile menu close)
+      setTimeout(() => onClick(), 0);
     }
   };
 

@@ -20,9 +20,9 @@ export default function Button({
   type = "button"
 }: ButtonProps) {
   const sizeClasses = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base"
+    sm: "px-3 py-2 text-sm min-h-[40px] touch-manipulation",
+    md: "px-4 py-2.5 text-sm min-h-[44px] touch-manipulation",
+    lg: "px-6 py-3 text-base min-h-[48px] touch-manipulation"
   };
 
   const getVariantStyles = () => {
@@ -82,7 +82,7 @@ export default function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${sizeClasses[size]} font-medium rounded-lg transition-colors duration-200 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      className={`${sizeClasses[size]} font-medium rounded-lg transition-colors duration-200 active:scale-95 flex items-center justify-center ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
       style={{
         ...getVariantStyles(),
         fontFamily: typography.fontFamily.primary,

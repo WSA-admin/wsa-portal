@@ -26,29 +26,29 @@ export default function DashboardPage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <SubHeading>Your Profile</SubHeading>
 
-              <Card variant="gray">
+              <Card variant="gray" className="hover:bg-gray-100 transition-colors duration-200">
                 <Section orientation="vertical" positioning="start" spacing="md">
-                  <Section orientation="horizontal" positioning="start" spacing="lg">
-                    <Section orientation="vertical" positioning="start" spacing="none" fill>
+                  <Section orientation="vertical" positioning="start" spacing="md" className="sm:flex-row sm:gap-8">
+                    <Section orientation="vertical" positioning="start" spacing="sm" fill>
                       <Label>Name</Label>
-                      <Text>{user.displayName || 'N/A'}</Text>
+                      <Text className="break-words">{user.displayName || 'N/A'}</Text>
                     </Section>
 
-                    <Section orientation="vertical" positioning="start" spacing="none" fill>
+                    <Section orientation="vertical" positioning="start" spacing="sm" fill>
                       <Label>Email</Label>
-                      <Text>{user.mail || user.userPrincipalName || 'N/A'}</Text>
+                      <Text className="break-all text-sm sm:text-base">{user.mail || user.userPrincipalName || 'N/A'}</Text>
                     </Section>
                   </Section>
 
-                  <Section orientation="horizontal" positioning="start" spacing="lg">
-                    <Section orientation="vertical" positioning="start" spacing="none" fill>
+                  <Section orientation="vertical" positioning="start" spacing="md" className="sm:flex-row sm:gap-8">
+                    <Section orientation="vertical" positioning="start" spacing="sm" fill>
                       <Label>Job Title</Label>
-                      <Text>{user.jobTitle || 'N/A'}</Text>
+                      <Text className="break-words">{user.jobTitle || 'N/A'}</Text>
                     </Section>
 
-                    <Section orientation="vertical" positioning="start" spacing="none" fill>
+                    <Section orientation="vertical" positioning="start" spacing="sm" fill>
                       <Label>Department</Label>
-                      <Text>{user.department || 'N/A'}</Text>
+                      <Text className="break-words">{user.department || 'N/A'}</Text>
                     </Section>
                   </Section>
                 </Section>

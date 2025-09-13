@@ -1,4 +1,5 @@
 import { siteMetadata, siteViewport } from "@/lib/metadata";
+import { lexend } from "@/lib/branding";
 import "./globals.css";
 
 // Force dynamic rendering for all pages
@@ -12,10 +13,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Minimal root layout - no navigation, just HTML structure
+  // Root layout with proper HTML structure and WSA branding
   return (
-    <html lang="en">
-      <body className="antialiased">
+    <html lang="en" className="min-h-full bg-blue-50">
+      <body className={`${lexend.variable} font-lexend antialiased min-h-full w-full flex flex-col bg-blue-50`}>
         {children}
       </body>
     </html>

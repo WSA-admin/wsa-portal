@@ -11,16 +11,16 @@ interface TextProps {
 export default function Text({ 
   children, 
   color = brandColors.navy,
-  size = 'sm',
+  size = 'base',
   weight = 'normal',
   className = '' 
 }: TextProps) {
   const sizeClasses = {
     xs: 'text-xs',
-    sm: 'text-sm',
-    base: 'text-base',
-    lg: 'text-lg',
-    xl: 'text-xl'
+    sm: 'text-sm sm:text-sm',
+    base: 'text-base sm:text-base',
+    lg: 'text-lg sm:text-lg',
+    xl: 'text-xl sm:text-xl'
   };
 
   const weightClasses = {

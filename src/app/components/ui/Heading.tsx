@@ -13,7 +13,7 @@ export default function Heading({
 }: HeadingProps) {
   return (
     <h2 
-      className={`text-2xl font-bold ${className}`}
+      className={`text-lg sm:text-2xl lg:text-3xl font-bold leading-tight ${className}`}
       style={{
         color: color,
         fontFamily: typography.fontFamily.primary,

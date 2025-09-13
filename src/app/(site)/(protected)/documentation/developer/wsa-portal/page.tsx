@@ -1,4 +1,4 @@
-import { Section, Heading, SubHeading, Card } from "@/app/components/ui";
+import { Section, Heading, SubHeading, Card, CodeBlock } from "@/app/components/ui";
 import Link from "next/link";
 
 export default function WSAPortalPage() {
@@ -105,13 +105,14 @@ export default function WSAPortalPage() {
               
               <div>
                 <h5 className="font-medium text-[#2592D0] mb-2">🔐 Authentication Routes</h5>
-                <div className="space-y-2 text-sm font-mono bg-gray-50 p-3 rounded">
-                  <p><code>/</code> → Redirects to <code>/login</code></p>
-                  <p><code>/login</code> → PKCE OAuth initiation</p>
-                  <p><code>/api/auth/callback</code> → Token exchange</p>
-                  <p><code>/api/auth/logout</code> → Session cleanup</p>
-                  <p><code>/dashboard</code> → Protected interface</p>
-                </div>
+                <CodeBlock 
+                  variant="compact" 
+                  language="text"
+                >{`/ → Redirects to /login
+/login → PKCE OAuth initiation
+/api/auth/callback → Token exchange
+/api/auth/logout → Session cleanup
+/dashboard → Protected interface`}</CodeBlock>
               </div>
 
               <div>
@@ -140,7 +141,7 @@ export default function WSAPortalPage() {
               <div>
                 <h5 className="font-medium text-[#2592D0] mb-2">👤 User Profile</h5>
                 <div className="space-y-1 text-sm">
-                  <p><code>/api/graph/me</code></p>
+                  <p><CodeBlock variant="inline">/api/graph/me</CodeBlock></p>
                   <p className="text-gray-600">Retrieves user profile data from Azure AD</p>
                 </div>
               </div>
@@ -148,7 +149,7 @@ export default function WSAPortalPage() {
               <div>
                 <h5 className="font-medium text-[#702083] mb-2">📰 SharePoint News</h5>
                 <div className="space-y-1 text-sm">
-                  <p><code>/api/graph/news</code></p>
+                  <p><CodeBlock variant="inline">/api/graph/news</CodeBlock></p>
                   <p className="text-gray-600">Integrates SharePoint news feed</p>
                 </div>
               </div>
@@ -156,7 +157,7 @@ export default function WSAPortalPage() {
               <div>
                 <h5 className="font-medium text-[#FBBB02] mb-2">🔧 Graph Client</h5>
                 <div className="space-y-1 text-sm">
-                  <p><code>src/lib/graphClient.ts</code></p>
+                  <p><CodeBlock variant="inline">src/lib/graphClient.ts</CodeBlock></p>
                   <p className="text-gray-600">Centralized Graph API client</p>
                 </div>
               </div>
@@ -171,8 +172,10 @@ export default function WSAPortalPage() {
         <Card variant="gray">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Next.js App Router Structure</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`wsa-portal/
+            <CodeBlock 
+              title="Next.js App Router Structure"
+              language="structure"
+            >{`wsa-portal/
 ├── 📱 src/app/
 │   ├── (site)/                    # Main site group
 │   │   ├── login/               # Login page (standalone)
@@ -199,8 +202,7 @@ export default function WSAPortalPage() {
 │   ├── tsconfig.json             # TypeScript configuration
 │   └── next.config.ts            # Next.js configuration
 └── 📋 Documentation
-    └── CLAUDE.md                 # Project instructions`}</pre>
-            </div>
+    └── CLAUDE.md                 # Project instructions`}</CodeBlock>
           </Section>
         </Card>
       </Section>
@@ -214,13 +216,13 @@ export default function WSAPortalPage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-[#2592D0] mb-3">🧩 UI Component Library</h4>
               <div className="space-y-2 text-sm">
-                <p><strong>Location:</strong> <code>src/app/components/ui/</code></p>
+                <p><strong>Location:</strong> <CodeBlock variant="inline">src/app/components/ui/</CodeBlock></p>
                 <p><strong>Components:</strong></p>
                 <ul className="text-sm text-gray-600 space-y-1 ml-4">
-                  <li>• <code>Section</code> - Layout container</li>
-                  <li>• <code>Card</code> - Content cards</li>
-                  <li>• <code>Heading</code> - Typography</li>
-                  <li>• <code>Button</code> - Interactive elements</li>
+                  <li>• <CodeBlock variant="inline">Section</CodeBlock> - Layout container</li>
+                  <li>• <CodeBlock variant="inline">Card</CodeBlock> - Content cards</li>
+                  <li>• <CodeBlock variant="inline">Heading</CodeBlock> - Typography</li>
+                  <li>• <CodeBlock variant="inline">Button</CodeBlock> - Interactive elements</li>
                 </ul>
                 <p className="text-gray-600">Consistent design system following WSA branding</p>
               </div>
@@ -231,7 +233,7 @@ export default function WSAPortalPage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-[#702083] mb-3">🔐 Authentication System</h4>
               <div className="space-y-2 text-sm">
-                <p><strong>MSAL Server:</strong> <code>src/lib/msalServer.ts</code></p>
+                <p><strong>MSAL Server:</strong> <CodeBlock variant="inline">src/lib/msalServer.ts</CodeBlock></p>
                 <p><strong>Features:</strong></p>
                 <ul className="text-sm text-gray-600 space-y-1 ml-4">
                   <li>• Token management & refresh</li>
@@ -256,22 +258,24 @@ export default function WSAPortalPage() {
               
               <div>
                 <h5 className="font-medium text-[#2592D0] mb-2">🏗️ Azure AD Configuration</h5>
-                <div className="bg-gray-50 p-3 rounded text-sm font-mono">
-                  <p>AZURE_AD_TENANT_ID</p>
-                  <p>AZURE_AD_CLIENT_ID</p>
-                  <p>AZURE_AD_CLIENT_SECRET</p>
-                  <p>AZURE_AD_REDIRECT_URI</p>
-                </div>
+                <CodeBlock 
+                  variant="compact"
+                  language="text"
+                >{`AZURE_AD_TENANT_ID
+AZURE_AD_CLIENT_ID
+AZURE_AD_CLIENT_SECRET
+AZURE_AD_REDIRECT_URI`}</CodeBlock>
               </div>
 
               <div>
                 <h5 className="font-medium text-[#702083] mb-2">🔗 SharePoint Integration</h5>
-                <div className="bg-gray-50 p-3 rounded text-sm font-mono">
-                  <p>SHAREPOINT_SITE_URL</p>
-                  <p>SHAREPOINT_LIST_ID</p>
-                  <p>SESSION_SECRET</p>
-                  <p>NEXTAUTH_URL</p>
-                </div>
+                <CodeBlock 
+                  variant="compact"
+                  language="text"
+                >{`SHAREPOINT_SITE_URL
+SHAREPOINT_LIST_ID
+SESSION_SECRET
+NEXTAUTH_URL`}</CodeBlock>
               </div>
             </div>
             
@@ -322,7 +326,7 @@ export default function WSAPortalPage() {
                 <h5 className="font-medium text-[#702083] mb-2">📝 Typography</h5>
                 <div className="space-y-2 text-sm">
                   <p><strong>Primary Typeface:</strong> Lexend</p>
-                  <p><strong>Implementation:</strong> <code>src/lib/branding.ts</code></p>
+                  <p><strong>Implementation:</strong> <CodeBlock variant="inline">src/lib/branding.ts</CodeBlock></p>
                   <p><strong>Usage:</strong> All headings and body text</p>
                   <p><strong>Weights:</strong> Regular, Medium, Semi Bold, Bold</p>
                   <p className="text-gray-600">Optimized for readability and accessibility</p>
@@ -339,8 +343,10 @@ export default function WSAPortalPage() {
         <Card variant="gray">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Available Scripts</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`# Development server
+            <CodeBlock 
+              title="Available Scripts"
+              language="bash"
+            >{`# Development server
 npm run dev              # Start on http://localhost:3000
 
 # Production build
@@ -352,8 +358,7 @@ npm run lint             # Run ESLint for code quality
 npm run type-check       # Run TypeScript type checking
 
 # Testing
-npm test                 # Currently no tests configured`}</pre>
-            </div>
+npm test                 # Currently no tests configured`}</CodeBlock>
           </Section>
         </Card>
       </Section>

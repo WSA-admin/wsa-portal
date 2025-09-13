@@ -13,7 +13,7 @@ export default function Label({
 }: LabelProps) {
   return (
     <dt 
-      className={`text-sm font-medium ${className}`}
+      className={`text-xs sm:text-sm font-semibold uppercase tracking-wide ${className}`}
       style={{
         color: color,
         fontFamily: typography.fontFamily.primary,

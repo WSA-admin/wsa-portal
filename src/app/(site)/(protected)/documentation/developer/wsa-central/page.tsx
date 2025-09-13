@@ -1,4 +1,4 @@
-import { Section, Heading, SubHeading, Card } from "@/app/components/ui";
+import { Section, Heading, SubHeading, Card, CodeBlock } from "@/app/components/ui";
 import Link from "next/link";
 
 export default function WSACentralPage() {
@@ -197,32 +197,35 @@ export default function WSACentralPage() {
           <Card variant="gray">
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Authentication Endpoints</h4>
-              <div className="space-y-2 text-sm font-mono bg-gray-900 text-green-400 p-3 rounded">
-                <p><span className="text-yellow-400">POST</span> /auth/ - Register new user</p>
-                <p><span className="text-yellow-400">POST</span> /auth/token - User login</p>
-              </div>
+              <CodeBlock 
+                variant="compact"
+                language="text"
+              >{`POST /auth/ - Register new user
+POST /auth/token - User login`}</CodeBlock>
             </Section>
           </Card>
 
           <Card variant="gray">
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">User Management</h4>
-              <div className="space-y-2 text-sm font-mono bg-gray-900 text-green-400 p-3 rounded">
-                <p><span className="text-blue-400">GET</span> /users/me - Get profile</p>
-                <p><span className="text-purple-400">PUT</span> /users/change-password</p>
-              </div>
+              <CodeBlock 
+                variant="compact"
+                language="text"
+              >{`GET /users/me - Get profile
+PUT /users/change-password`}</CodeBlock>
             </Section>
           </Card>
 
           <Card variant="gray">
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Todo Management</h4>
-              <div className="space-y-2 text-sm font-mono bg-gray-900 text-green-400 p-3 rounded">
-                <p><span className="text-blue-400">GET</span> /todos/ - List todos</p>
-                <p><span className="text-yellow-400">POST</span> /todos/ - Create todo</p>
-                <p><span className="text-purple-400">PUT</span> /todos/{`{id}`} - Update todo</p>
-                <p><span className="text-red-400">DELETE</span> /todos/{`{id}`} - Delete todo</p>
-              </div>
+              <CodeBlock 
+                variant="compact"
+                language="text"
+              >{`GET /todos/ - List todos
+POST /todos/ - Create todo
+PUT /todos/{id} - Update todo
+DELETE /todos/{id} - Delete todo`}</CodeBlock>
             </Section>
           </Card>
 
@@ -230,9 +233,9 @@ export default function WSACentralPage() {
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Documentation Access</h4>
               <div className="space-y-2 text-sm">
-                <p><strong>Swagger UI:</strong> <code>localhost:8000/docs</code></p>
-                <p><strong>ReDoc:</strong> <code>localhost:8000/redoc</code></p>
-                <p><strong>OpenAPI:</strong> <code>localhost:8000/openapi.json</code></p>
+                <p><strong>Swagger UI:</strong> <CodeBlock variant="inline">localhost:8000/docs</CodeBlock></p>
+                <p><strong>ReDoc:</strong> <CodeBlock variant="inline">localhost:8000/redoc</CodeBlock></p>
+                <p><strong>OpenAPI:</strong> <CodeBlock variant="inline">localhost:8000/openapi.json</CodeBlock></p>
               </div>
             </Section>
           </Card>
@@ -245,8 +248,10 @@ export default function WSACentralPage() {
         <Card variant="white">
           <Section orientation="vertical" positioning="start" spacing="sm">
             <h4 className="font-semibold text-gray-900 mb-3">Quick Start with Docker (Recommended)</h4>
-            <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-              <pre>{`# Prerequisites: Docker Desktop, Python 3.11+, Git
+            <CodeBlock 
+              title="Quick Start with Docker (Recommended)"
+              language="bash"
+            >{`# Prerequisites: Docker Desktop, Python 3.11+, Git
 
 # Clone repository
 git clone <repository-url>
@@ -261,8 +266,7 @@ docker compose up --build
 # Interactive API: http://localhost:8000/redoc
 
 # Stop application
-docker compose down`}</pre>
-            </div>
+docker compose down`}</CodeBlock>
           </Section>
         </Card>
       </Section>
@@ -275,8 +279,10 @@ docker compose down`}</pre>
           <Card variant="gray">
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Testing Commands</h4>
-              <div className="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-sm">
-                <pre>{`# Run all tests
+              <CodeBlock 
+                variant="compact"
+                language="bash"
+              >{`# Run all tests
 python -m pytest
 
 # Unit tests only
@@ -286,24 +292,24 @@ python -m pytest tests/test_*.py
 python -m pytest tests/e2e/
 
 # With coverage
-python -m pytest --cov=src`}</pre>
-              </div>
+python -m pytest --cov=src`}</CodeBlock>
             </Section>
           </Card>
 
           <Card variant="gray">
             <Section orientation="vertical" positioning="start" spacing="sm">
               <h4 className="font-semibold text-gray-900">Code Quality</h4>
-              <div className="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-sm">
-                <pre>{`# Code formatting
+              <CodeBlock 
+                variant="compact"
+                language="bash"
+              >{`# Code formatting
 black .
 
 # Linting
 ruff check .
 
 # Type checking
-mypy src/`}</pre>
-              </div>
+mypy src/`}</CodeBlock>
             </Section>
           </Card>
         </div>

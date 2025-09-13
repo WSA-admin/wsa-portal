@@ -4,6 +4,7 @@ interface SectionProps {
   positioning?: 'start' | 'center' | 'end';
   spacing?: 'none' | 'sm' | 'md' | 'lg';
   fill?: boolean;
+  responsive?: boolean;
   className?: string;
 }
 
@@ -13,10 +14,11 @@ export default function Section({
   positioning = 'start',
   spacing = 'md',
   fill = false,
+  responsive = true,
   className = '' 
 }: SectionProps) {
   const orientationClasses = {
-    horizontal: 'flex flex-row',
+    horizontal: responsive ? 'flex flex-col sm:flex-row' : 'flex flex-row',
     vertical: 'flex flex-col'
   };
 
@@ -36,9 +38,9 @@ export default function Section({
   const spacingClasses = {
     horizontal: {
       none: '',
-      sm: 'gap-x-2',
-      md: 'gap-x-4',
-      lg: 'gap-x-8'
+      sm: responsive ? 'gap-2 sm:gap-x-2' : 'gap-x-2',
+      md: responsive ? 'gap-3 sm:gap-x-4' : 'gap-x-4',
+      lg: responsive ? 'gap-4 sm:gap-x-8' : 'gap-x-8'
     },
     vertical: {
       none: '',
