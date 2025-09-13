@@ -25,7 +25,7 @@ export default function ProgramsManualPage() {
           <Section orientation="vertical" positioning="start" spacing="sm">
             <p className="text-gray-700">
               WorkSource Alliance offers comprehensive programs designed to connect international students and graduates 
-              with Atlantic Canada's job opportunities through strategic partnerships with employers, organizations, and policymakers. 
+              with Atlantic Canada&apos;s job opportunities through strategic partnerships with employers, organizations, and policymakers.
               Our programs address the full spectrum of career development needs.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">

@@ -314,7 +314,7 @@ mypy src/`}</pre>
         <SubHeading>Migration from Airtable</SubHeading>
         <Card variant="white">
           <Section orientation="vertical" positioning="start" spacing="sm">
-            <h4 className="font-semibold text-gray-900 mb-3">Why We're Moving Away from Airtable</h4>
+            <h4 className="font-semibold text-gray-900 mb-3">Why We&apos;re Moving Away from Airtable</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
               <div>

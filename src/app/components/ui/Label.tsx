@@ -1,4 +1,4 @@
-import { brandColors, typography } from "@/lib/branding";
+import { typography } from "@/lib/branding";
 
 interface LabelProps {
   children: React.ReactNode;

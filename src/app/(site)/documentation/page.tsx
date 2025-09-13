@@ -19,7 +19,7 @@ export default function DocumentationPage() {
             <Section orientation="vertical" positioning="start" spacing="sm" className="flex-1">
               <h3 className="text-xl font-semibold text-[#2592D0]">About WSA</h3>
               <p className="text-gray-600">
-                WorkSource Alliance connects international students and graduates to Atlantic Canada's opportunities through strategic partnerships with employers, organizations, and policymakers.
+              WorkSource Alliance connects international students and graduates to Atlantic Canada&apos;s opportunities through strategic partnerships with employers, organizations, and policymakers.
               </p>
             </Section>
           </Card>
