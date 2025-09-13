@@ -1,5 +1,5 @@
 import { Layout, Header, Body } from "@/app/components/layout";
-import { Logo, Nav, NavLink, Button } from "@/app/components/ui";
+import { Logo, Nav, NavLink, LogoutButton } from "@/app/components/ui";
 import { siteMetadata, siteViewport } from "@/lib/metadata";
 import { getServerSession } from "@/lib/msalServer";
 import "./globals.css";
@@ -23,7 +23,7 @@ export default async function RootLayout({
           <Nav>
             <NavLink href="/documentation">Documentation</NavLink>
           </Nav>
-          <Button>Logout</Button>
+          <LogoutButton />
         </Header>
       )}
       <Body>{children}</Body>
