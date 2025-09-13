@@ -20,15 +20,13 @@ export default async function RootLayout({
 
   return (
     <Layout>
-      {isAuthenticated && (
-        <Header>
-          <Logo />
-          <Nav>
-            <NavLink href="/documentation">Documentation</NavLink>
-          </Nav>
-          <LogoutButton />
-        </Header>
-      )}
+      <Header>
+        <Logo />
+        <Nav>
+          <NavLink href="/documentation">Documentation</NavLink>
+        </Nav>
+        {isAuthenticated && <LogoutButton />}
+      </Header>
       <Body>{children}</Body>
     </Layout>
   );
