@@ -21,9 +21,9 @@ export default function WorkSourceAllianceDesktop() {
 
                 <Heading level={4} customColor="#702083" className="mb-2">Current Status</Heading>
                 <Section spacing="sm">
-                  <Text variant="small"><Text weight="semibold">Version:</Text> v0.0.3 (August 2025)</Text>
-                  <Text variant="small"><Text weight="semibold">Environment:</Text> Production</Text>
-                  <Text variant="small"><Text weight="semibold">URL:</Text> worksourcealliance.com</Text>
+                  <Text variant="small"><span className="font-semibold">Version:</span> v0.0.3 (August 2025)</Text>
+                  <Text variant="small"><span className="font-semibold">Environment:</span> Production</Text>
+                  <Text variant="small"><span className="font-semibold">URL:</span> worksourcealliance.com</Text>
                 </Section>
               </Section>
 
@@ -51,12 +51,12 @@ export default function WorkSourceAllianceDesktop() {
             <Section spacing="sm">
               <Heading level={4} weight="semibold" color="gray">Frontend Stack</Heading>
               <Section spacing="sm">
-                <Text variant="small"><Text weight="semibold">Framework:</Text> Next.js 15 with App Router</Text>
-                <Text variant="small"><Text weight="semibold">Language:</Text> TypeScript</Text>
-                <Text variant="small"><Text weight="semibold">Styling:</Text> Tailwind CSS 4</Text>
-                <Text variant="small"><Text weight="semibold">UI Library:</Text> React 19, Lucide React</Text>
-                <Text variant="small"><Text weight="semibold">Forms:</Text> React Hook Form + Zod</Text>
-                <Text variant="small"><Text weight="semibold">Build System:</Text> Turborepo</Text>
+                <Text variant="small"><span className="font-semibold">Framework:</span> Next.js 15 with App Router</Text>
+                <Text variant="small"><span className="font-semibold">Language:</span> TypeScript</Text>
+                <Text variant="small"><span className="font-semibold">Styling:</span> Tailwind CSS 4</Text>
+                <Text variant="small"><span className="font-semibold">UI Library:</span> React 19, Lucide React</Text>
+                <Text variant="small"><span className="font-semibold">Forms:</span> React Hook Form + Zod</Text>
+                <Text variant="small"><span className="font-semibold">Build System:</span> Turborepo</Text>
               </Section>
             </Section>
           </Card>
@@ -65,12 +65,12 @@ export default function WorkSourceAllianceDesktop() {
             <Section spacing="sm">
               <Heading level={4} weight="semibold" color="gray">Backend Infrastructure</Heading>
               <Section spacing="sm">
-                <Text variant="small"><Text weight="semibold">Database:</Text> PostgreSQL (Supabase)</Text>
-                <Text variant="small"><Text weight="semibold">Authentication:</Text> Supabase Auth + RLS</Text>
-                <Text variant="small"><Text weight="semibold">Storage:</Text> Supabase Storage</Text>
-                <Text variant="small"><Text weight="semibold">Functions:</Text> Supabase Edge Functions</Text>
-                <Text variant="small"><Text weight="semibold">Integrations:</Text> Airtable, TanStack Query</Text>
-                <Text variant="small"><Text weight="semibold">i18n:</Text> React i18next</Text>
+                <Text variant="small"><span className="font-semibold">Database:</span> PostgreSQL (Supabase)</Text>
+                <Text variant="small"><span className="font-semibold">Authentication:</span> Supabase Auth + RLS</Text>
+                <Text variant="small"><span className="font-semibold">Storage:</span> Supabase Storage</Text>
+                <Text variant="small"><span className="font-semibold">Functions:</span> Supabase Edge Functions</Text>
+                <Text variant="small"><span className="font-semibold">Integrations:</span> Airtable, TanStack Query</Text>
+                <Text variant="small"><span className="font-semibold">i18n:</span> React i18next</Text>
               </Section>
             </Section>
           </Card>

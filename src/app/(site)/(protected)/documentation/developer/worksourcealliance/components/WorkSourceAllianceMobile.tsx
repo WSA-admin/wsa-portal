@@ -155,7 +155,7 @@ export default function WorkSourceAllianceMobile() {
               <Section center>
                 <Heading level={4} color="blue" size="sm" className="mb-2">👨‍💻 Core Maintainer</Heading>
                 <div className="border-l-4 border-[#2592D0] pl-4 text-left">
-                  <Text weight="semibold">@WSA-admin</Text>
+                  <Text><span className="font-semibold">@WSA-admin</span></Text>
                   <Text variant="small" color="gray">Platform Administrator & Lead Developer</Text>
                   <Text variant="small" color="gray">Personal: @tmerrien (GitHub)</Text>
                 </div>
