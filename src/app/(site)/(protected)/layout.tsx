@@ -9,6 +9,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       <Header>
         <Logo />
         <Nav>
+          <NavLink href="/dashboard">Dashboard</NavLink>
+          <NavLink href="/analytics">Analytics</NavLink>
           <NavLink href="/documentation">Documentation</NavLink>
         </Nav>
         <LogoutButton />
