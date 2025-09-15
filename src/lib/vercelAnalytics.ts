@@ -15,70 +15,78 @@ export interface VercelSpeedData {
 }
 
 function getDateRangeFromPeriod(period: string): { start: Date; end: Date; label: string } {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth(); // 0-based
+  const now = new Date(); // September 15, 2025
+  const currentYear = now.getFullYear(); // 2025
+  const currentMonth = now.getMonth(); // 8 (September, 0-based)
+
+  // Site launched in July 2025, analytics started September 8, 2025
+  const siteLaunchDate = new Date(2025, 6, 15); // July 15, 2025
+  const analyticsStartDate = new Date(2025, 8, 8); // September 8, 2025
 
   switch (period) {
+    case 'last-7-days':
+      return {
+        start: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
+        end: now,
+        label: 'Last 7 Days'
+      };
+
+    case 'since-analytics':
+      return {
+        start: analyticsStartDate,
+        end: now,
+        label: 'Since Analytics Started (Sept 8)'
+      };
+
+    case 'since-launch':
+      return {
+        start: siteLaunchDate,
+        end: now,
+        label: 'Since Site Launch (July 15)'
+      };
+
     case 'current-month':
       return {
-        start: new Date(currentYear, currentMonth, 1),
+        start: new Date(2025, 8, 1), // September 1, 2025
         end: now,
-        label: `${new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} (Current)`
+        label: 'September 2025 (Current)'
       };
 
     case 'previous-month':
-      const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-      const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
       return {
-        start: new Date(prevYear, prevMonth, 1),
-        end: new Date(currentYear, currentMonth, 0), // Last day of previous month
-        label: new Date(prevYear, prevMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        start: new Date(2025, 7, 1), // August 1, 2025
+        end: new Date(2025, 8, 0), // August 31, 2025
+        label: 'August 2025'
       };
 
-    case 'current-quarter':
-      const quarterStart = Math.floor(currentMonth / 3) * 3;
+    case '2025-07':
       return {
-        start: new Date(currentYear, quarterStart, 1),
-        end: now,
-        label: `Q${Math.floor(currentMonth / 3) + 1} ${currentYear} (Current)`
-      };
-
-    case 'previous-quarter':
-      const prevQuarterStart = currentMonth < 3 ? 9 : Math.floor(currentMonth / 3) * 3 - 3;
-      const prevQuarterYear = currentMonth < 3 ? currentYear - 1 : currentYear;
-      const prevQuarterEnd = new Date(currentYear, Math.floor(currentMonth / 3) * 3, 0);
-      return {
-        start: new Date(prevQuarterYear, prevQuarterStart, 1),
-        end: prevQuarterEnd,
-        label: `Q${Math.floor(prevQuarterStart / 3) + 1} ${prevQuarterYear}`
+        start: new Date(2025, 6, 15), // July 15, 2025 (site launch)
+        end: new Date(2025, 7, 0), // July 31, 2025
+        label: 'July 2025 (Launch Month)'
       };
 
     default:
-      // Handle specific months like "2024-12" or quarters like "2024-Q4"
-      if (period.includes('-Q')) {
-        const [year, quarter] = period.split('-Q');
-        const qNum = parseInt(quarter);
-        const qStart = (qNum - 1) * 3;
-        return {
-          start: new Date(parseInt(year), qStart, 1),
-          end: new Date(parseInt(year), qStart + 3, 0),
-          label: `Q${qNum} ${year}`
-        };
-      } else if (period.match(/^\d{4}-\d{2}$/)) {
+      // Handle specific months like "2025-08"
+      if (period.match(/^\d{4}-\d{2}$/)) {
         const [year, month] = period.split('-').map(Number);
+
+        // Don't allow dates before site launch
+        const requestedStart = new Date(year, month - 1, 1);
+        const actualStart = requestedStart < siteLaunchDate ? siteLaunchDate : requestedStart;
+
         return {
-          start: new Date(year, month - 1, 1),
+          start: actualStart,
           end: new Date(year, month, 0),
           label: new Date(year, month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
         };
       }
 
-      // Default to current month
+      // Default to last 7 days (most realistic for new analytics)
       return {
-        start: new Date(currentYear, currentMonth, 1),
+        start: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000),
         end: now,
-        label: `${new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} (Current)`
+        label: 'Last 7 Days'
       };
   }
 }
@@ -130,26 +138,122 @@ function generateRealisticData(period: string): VercelAnalyticsData {
   };
 }
 
+function calculatePeriodDataFromKnownTotals(
+  period: string,
+  knownTotals: {
+    totalViews: number;
+    totalVisitors: number;
+    analyticsStartDate: Date;
+    siteLaunchDate: Date;
+  }
+): VercelAnalyticsData {
+  const { start, end } = getDateRangeFromPeriod(period);
+  const now = new Date();
+
+  // Analytics have only been running for 1 week (since Sept 8, 2025)
+  const analyticsRunningDays = Math.ceil((now.getTime() - knownTotals.analyticsStartDate.getTime()) / (1000 * 60 * 60 * 24));
+  const periodDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Calculate overlap between analytics period and requested period
+  const overlapStart = new Date(Math.max(start.getTime(), knownTotals.analyticsStartDate.getTime()));
+  const overlapEnd = new Date(Math.min(end.getTime(), now.getTime()));
+  const overlapDays = Math.max(0, Math.ceil((overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60 * 60 * 24)));
+
+  // Calculate realistic daily averages for a new site with 1-week analytics
+  const dailyViews = knownTotals.totalViews / Math.max(analyticsRunningDays, 1); // ~18 views/day
+  const dailyVisitors = knownTotals.totalVisitors / Math.max(analyticsRunningDays, 1); // ~8 visitors/day
+
+  // For periods before analytics started, show 0 or very minimal data
+  let periodViews: number;
+  let periodVisitors: number;
+
+  if (start < knownTotals.analyticsStartDate) {
+    // Period includes time before analytics - only count overlap
+    periodViews = Math.floor(dailyViews * overlapDays);
+    periodVisitors = Math.floor(dailyVisitors * overlapDays);
+  } else {
+    // Period is entirely within analytics timeframe
+    periodViews = Math.floor(dailyViews * periodDays);
+    periodVisitors = Math.floor(dailyVisitors * periodDays);
+  }
+
+  return {
+    views: Math.max(periodViews, 0),
+    visitors: Math.max(periodVisitors, 0),
+    topPages: [
+      { page: '/', views: Math.floor(periodViews * 0.45) },
+      { page: '/about', views: Math.floor(periodViews * 0.20) },
+      { page: '/programs', views: Math.floor(periodViews * 0.15) },
+      { page: '/contact', views: Math.floor(periodViews * 0.10) },
+      { page: '/resources', views: Math.floor(periodViews * 0.10) },
+    ].filter(page => page.views > 0),
+    topCountries: [
+      { country: 'Canada', visitors: Math.floor(periodVisitors * 0.75) },
+      { country: 'United States', visitors: Math.floor(periodVisitors * 0.20) },
+      { country: 'Other', visitors: Math.floor(periodVisitors * 0.05) },
+    ].filter(country => country.visitors > 0),
+    devices: [
+      { device: 'Desktop', visitors: Math.floor(periodVisitors * 0.60) },
+      { device: 'Mobile', visitors: Math.floor(periodVisitors * 0.35) },
+      { device: 'Tablet', visitors: Math.floor(periodVisitors * 0.05) },
+    ].filter(device => device.visitors > 0),
+    referrers: [
+      { referrer: 'Direct', visitors: Math.floor(periodVisitors * 0.50) },
+      { referrer: 'Google Search', visitors: Math.floor(periodVisitors * 0.30) },
+      { referrer: 'LinkedIn', visitors: Math.floor(periodVisitors * 0.15) },
+      { referrer: 'Other', visitors: Math.floor(periodVisitors * 0.05) },
+    ].filter(referrer => referrer.visitors > 0),
+  };
+}
+
 export async function fetchVercelAnalytics(
   teamId: string,
   projectId: string,
-  period: string = 'current-month'
+  period: string = 'last-7-days'
 ): Promise<VercelAnalyticsData> {
-  const token = process.env.VERCEL_ACCESS_TOKEN;
+  try {
+    // First, try to get real WSA analytics data from our ingestion endpoint
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/analytics/ingest`);
 
-  if (!token) {
-    throw new Error('VERCEL_ACCESS_TOKEN is required');
+    if (response.ok) {
+      const data = await response.json();
+
+      if (data.events && data.events.length > 0) {
+        // Process real WSA analytics events using the new processor
+        const { processWSAAnalyticsEvents } = await import('./wsaAnalyticsProcessor');
+        const analyticsData = processWSAAnalyticsEvents(data.events, period);
+
+        console.log(`📊 Using real WSA analytics data: ${analyticsData.views} views, ${analyticsData.visitors} visitors`);
+        return analyticsData;
+      }
+    }
+
+    // Fallback: return empty data if no real analytics available
+    console.log('📊 No real analytics data available, returning empty state');
+
+    return {
+      views: 0,
+      visitors: 0,
+      topPages: [],
+      topCountries: [],
+      devices: [],
+      referrers: []
+    };
+
+  } catch (error) {
+    console.error('Error fetching analytics data:', error);
+
+    // Return empty data on error instead of mock data
+    return {
+      views: 0,
+      visitors: 0,
+      topPages: [],
+      topCountries: [],
+      devices: [],
+      referrers: []
+    };
   }
-
-  // For now, return realistic sample data based on the selected period
-  // TODO: Replace with actual Vercel Analytics API calls once endpoint is confirmed
-
-  const sampleData = generateRealisticData(period);
-
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-
-  return sampleData;
 }
 
 export async function fetchVercelSpeedInsights(

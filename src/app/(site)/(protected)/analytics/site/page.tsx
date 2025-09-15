@@ -10,10 +10,17 @@ export default function SiteAnalyticsPage() {
   const [speedData, setSpeedData] = useState<VercelSpeedData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState('current-month');
+  const [timeRange, setTimeRange] = useState('last-7-days');
 
   useEffect(() => {
     fetchAnalyticsData();
+
+    // Set up auto-refresh for real-time data
+    const interval = setInterval(() => {
+      fetchAnalyticsData();
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
   }, [timeRange]);
 
   const fetchAnalyticsData = async () => {
@@ -92,33 +99,37 @@ export default function SiteAnalyticsPage() {
               onChange={(e) => setTimeRange(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
             >
-              <optgroup label="Current Periods">
-                <option value="current-month">Current Month</option>
-                <option value="current-quarter">Current Quarter</option>
-                <option value="current-year">Current Year</option>
+              <optgroup label="Analytics Period (Since Sept 8, 2025)">
+                <option value="last-7-days">Last 7 Days</option>
+                <option value="since-analytics">Since Analytics Started (Sept 8)</option>
               </optgroup>
-              <optgroup label="Previous Periods">
-                <option value="previous-month">Previous Month</option>
-                <option value="previous-quarter">Previous Quarter</option>
-                <option value="previous-year">Previous Year</option>
-              </optgroup>
-              <optgroup label="Specific Months">
-                <option value="2025-01">January 2025</option>
-                <option value="2024-12">December 2024</option>
-                <option value="2024-11">November 2024</option>
-                <option value="2024-10">October 2024</option>
-                <option value="2024-09">September 2024</option>
-              </optgroup>
-              <optgroup label="Quarters">
-                <option value="2025-Q1">Q1 2025</option>
-                <option value="2024-Q4">Q4 2024</option>
-                <option value="2024-Q3">Q3 2024</option>
-                <option value="2024-Q2">Q2 2024</option>
+              <optgroup label="Site History (Since July 2025)">
+                <option value="current-month">September 2025 (Current)</option>
+                <option value="previous-month">August 2025</option>
+                <option value="2025-07">July 2025 (Launch Month)</option>
+                <option value="since-launch">Since Site Launch</option>
               </optgroup>
             </select>
           </Section>
 
           <Section orientation="vertical" positioning="start" spacing="md">
+            {/* Real-time Status Indicator */}
+            {analyticsData && (analyticsData.views > 0 || analyticsData.visitors > 0) ? (
+              <Card variant="gray" className="border border-green-200 bg-green-50">
+                <Section orientation="horizontal" positioning="start" spacing="sm">
+                  <div className="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                  <Text className="text-green-700 font-medium">Live data from worksourcealliance.ca</Text>
+                </Section>
+              </Card>
+            ) : (
+              <Card variant="gray" className="border border-yellow-200 bg-yellow-50">
+                <Section orientation="horizontal" positioning="start" spacing="sm">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <Text className="text-yellow-700 font-medium">Waiting for analytics data from worksourcealliance.ca</Text>
+                </Section>
+              </Card>
+            )}
+
             {/* Traffic Overview */}
             <Section orientation="vertical" positioning="start" spacing="md" className="sm:grid sm:grid-cols-2 lg:grid-cols-4">
               <Card variant="gray" className="border border-blue-200 bg-blue-50">
@@ -193,12 +204,16 @@ export default function SiteAnalyticsPage() {
                 <Section orientation="vertical" positioning="start" spacing="sm">
                   <SubHeading>Top Pages</SubHeading>
                   <div className="space-y-2">
-                    {analyticsData?.topPages.slice(0, 5).map((page, index) => (
-                      <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                        <Text className="text-sm truncate flex-1 mr-2">{page.page}</Text>
-                        <Text className="text-sm font-semibold text-[#2592D0]">{page.views.toLocaleString()}</Text>
-                      </div>
-                    )) || <Text className="text-gray-500 italic">No data available</Text>}
+                    {analyticsData?.topPages && analyticsData.topPages.length > 0 ? (
+                      analyticsData.topPages.slice(0, 5).map((page, index) => (
+                        <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                          <Text className="text-sm truncate flex-1 mr-2">{page.page}</Text>
+                          <Text className="text-sm font-semibold text-[#2592D0]">{page.views.toLocaleString()}</Text>
+                        </div>
+                      ))
+                    ) : (
+                      <Text className="text-gray-500 italic">No page views recorded yet</Text>
+                    )}
                   </div>
                 </Section>
               </Card>
@@ -207,12 +222,55 @@ export default function SiteAnalyticsPage() {
                 <Section orientation="vertical" positioning="start" spacing="sm">
                   <SubHeading>Top Countries</SubHeading>
                   <div className="space-y-2">
-                    {analyticsData?.topCountries.slice(0, 5).map((country, index) => (
-                      <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
-                        <Text className="text-sm flex-1 mr-2">{country.country}</Text>
-                        <Text className="text-sm font-semibold text-[#702083]">{country.visitors.toLocaleString()}</Text>
-                      </div>
-                    )) || <Text className="text-gray-500 italic">No data available</Text>}
+                    {analyticsData?.topCountries && analyticsData.topCountries.length > 0 ? (
+                      analyticsData.topCountries.slice(0, 5).map((country, index) => (
+                        <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                          <Text className="text-sm flex-1 mr-2">{country.country}</Text>
+                          <Text className="text-sm font-semibold text-[#702083]">{country.visitors.toLocaleString()}</Text>
+                        </div>
+                      ))
+                    ) : (
+                      <Text className="text-gray-500 italic">No visitor data recorded yet</Text>
+                    )}
+                  </div>
+                </Section>
+              </Card>
+            </Section>
+
+            {/* Device & Referrer Data */}
+            <Section orientation="vertical" positioning="start" spacing="md" className="sm:grid sm:grid-cols-2">
+              <Card variant="gray">
+                <Section orientation="vertical" positioning="start" spacing="sm">
+                  <SubHeading>Devices</SubHeading>
+                  <div className="space-y-2">
+                    {analyticsData?.devices && analyticsData.devices.length > 0 ? (
+                      analyticsData.devices.slice(0, 5).map((device, index) => (
+                        <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                          <Text className="text-sm flex-1 mr-2">{device.device}</Text>
+                          <Text className="text-sm font-semibold text-[#012E55]">{device.visitors.toLocaleString()}</Text>
+                        </div>
+                      ))
+                    ) : (
+                      <Text className="text-gray-500 italic">No device data recorded yet</Text>
+                    )}
+                  </div>
+                </Section>
+              </Card>
+
+              <Card variant="gray">
+                <Section orientation="vertical" positioning="start" spacing="sm">
+                  <SubHeading>Traffic Sources</SubHeading>
+                  <div className="space-y-2">
+                    {analyticsData?.referrers && analyticsData.referrers.length > 0 ? (
+                      analyticsData.referrers.slice(0, 5).map((referrer, index) => (
+                        <div key={index} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-b-0">
+                          <Text className="text-sm flex-1 mr-2">{referrer.referrer}</Text>
+                          <Text className="text-sm font-semibold text-[#EF7B02]">{referrer.visitors.toLocaleString()}</Text>
+                        </div>
+                      ))
+                    ) : (
+                      <Text className="text-gray-500 italic">No referrer data recorded yet</Text>
+                    )}
                   </div>
                 </Section>
               </Card>
