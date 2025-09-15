@@ -10,7 +10,7 @@ export default function SiteAnalyticsPage() {
   const [speedData, setSpeedData] = useState<VercelSpeedData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [timeRange, setTimeRange] = useState('7d');
+  const [timeRange, setTimeRange] = useState('current-month');
 
   useEffect(() => {
     fetchAnalyticsData();
@@ -92,10 +92,29 @@ export default function SiteAnalyticsPage() {
               onChange={(e) => setTimeRange(e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm"
             >
-              <option value="1d">Last 24 hours</option>
-              <option value="7d">Last 7 days</option>
-              <option value="30d">Last 30 days</option>
-              <option value="90d">Last 90 days</option>
+              <optgroup label="Current Periods">
+                <option value="current-month">Current Month</option>
+                <option value="current-quarter">Current Quarter</option>
+                <option value="current-year">Current Year</option>
+              </optgroup>
+              <optgroup label="Previous Periods">
+                <option value="previous-month">Previous Month</option>
+                <option value="previous-quarter">Previous Quarter</option>
+                <option value="previous-year">Previous Year</option>
+              </optgroup>
+              <optgroup label="Specific Months">
+                <option value="2025-01">January 2025</option>
+                <option value="2024-12">December 2024</option>
+                <option value="2024-11">November 2024</option>
+                <option value="2024-10">October 2024</option>
+                <option value="2024-09">September 2024</option>
+              </optgroup>
+              <optgroup label="Quarters">
+                <option value="2025-Q1">Q1 2025</option>
+                <option value="2024-Q4">Q4 2024</option>
+                <option value="2024-Q3">Q3 2024</option>
+                <option value="2024-Q2">Q2 2024</option>
+              </optgroup>
             </select>
           </Section>
 

@@ -4,7 +4,7 @@ import { fetchVercelAnalytics, fetchVercelSpeedInsights } from '@/lib/vercelAnal
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const since = searchParams.get('since') || '7d';
+    const period = searchParams.get('since') || 'current-month';
     const type = searchParams.get('type') || 'analytics';
 
     const teamId = process.env.VERCEL_TEAM_ID;
@@ -18,10 +18,10 @@ export async function GET(request: NextRequest) {
     }
 
     if (type === 'speed') {
-      const speedData = await fetchVercelSpeedInsights(teamId, projectId, since);
+      const speedData = await fetchVercelSpeedInsights(teamId, projectId, period);
       return NextResponse.json(speedData);
     } else {
-      const analyticsData = await fetchVercelAnalytics(teamId, projectId, since);
+      const analyticsData = await fetchVercelAnalytics(teamId, projectId, period);
       return NextResponse.json(analyticsData);
     }
   } catch (error) {
